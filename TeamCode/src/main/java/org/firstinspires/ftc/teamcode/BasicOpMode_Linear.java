@@ -49,16 +49,16 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
+@TeleOp
 
 public class BasicOpMode_Linear extends LinearOpMode {
 
     // Declare OpMode members.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor LFDrive = null;
-    private DcMotor RFDrive = null;
-    private DcMotor LBDrive = null;
-    private DcMotor RBDrive = null;
+        private ElapsedTime runtime = new ElapsedTime();
+//        private DcMotor LFDrive = null;
+//        private DcMotor RFDrive = null;
+//        private DcMotor LBDrive = null;
+//        private DcMotor RBDrive = null;
 
     @Override
     public void runOpMode() {
@@ -68,17 +68,19 @@ public class BasicOpMode_Linear extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        LFDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
-        RFDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        LBDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
-        RBDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+//            LFDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
+//            RFDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+//            LBDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
+//            RBDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+
+        RobotHardware robot = new RobotHardware();
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        LFDrive.setDirection(DcMotor.Direction.FORWARD);
-        RFDrive.setDirection(DcMotor.Direction.REVERSE);
-        LBDrive.setDirection(DcMotor.Direction.FORWARD);
-        RBDrive.setDirection(DcMotor.Direction.REVERSE);
+        robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
+        robot.RFDrive.setDirection(DcMotor.Direction.REVERSE);
+        robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
+        robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -110,10 +112,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
             // rightPower = -gamepad1.right_stick_y ;
 
             // Send calculated power to wheels
-            LFDrive.setPower(leftPower - strafePower);
-            RFDrive.setPower(rightPower + strafePower);
-            LBDrive.setPower(leftPower + strafePower);
-            RBDrive.setPower(rightPower - strafePower);
+            robot.LFDrive.setPower(leftPower + strafePower);
+            robot.RFDrive.setPower(rightPower + strafePower);
+            robot.LBDrive.setPower(leftPower - strafePower);
+            robot.RBDrive.setPower(rightPower - strafePower);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
