@@ -36,49 +36,38 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-
 @TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
 
-public class BasicOpMode_Linear extends LinearOpMode {
+public class BasicOpMode extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
+    /*
     private DcMotor LFDrive = null;
     private DcMotor RFDrive = null;
     private DcMotor LBDrive = null;
     private DcMotor RBDrive = null;
+    private DcMotor CarouselSpin = null;
+    */
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
+        /*
         LFDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
         RFDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         LBDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
         RBDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        CarouselSpin = hardwareMap.get(DcMotor.class, "carousel_spinner");
+        */
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        LFDrive.setDirection(DcMotor.Direction.FORWARD);
-        RFDrive.setDirection(DcMotor.Direction.REVERSE);
-        LBDrive.setDirection(DcMotor.Direction.FORWARD);
-        RBDrive.setDirection(DcMotor.Direction.REVERSE);
+        RobotHardware.LFDrive.setDirection(DcMotor.Direction.FORWARD);
+        RobotHardware.RFDrive.setDirection(DcMotor.Direction.REVERSE);
+        RobotHardware.LBDrive.setDirection(DcMotor.Direction.FORWARD);
+        RobotHardware.RBDrive.setDirection(DcMotor.Direction.REVERSE);
+        // RobotHardware.Carousel.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -92,6 +81,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double rightPower;
             double strafePower;
 
+            double multiplier = 1.0;
+
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
 
@@ -101,24 +92,31 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double strafe = -gamepad1.left_stick_x;
             double turn  =  gamepad1.right_stick_x;
             leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
-            strafePower = Range.clip(strafe, -1.0, 1.0);
             rightPower = Range.clip(drive - turn, -1.0, 1.0) ;
+            strafePower = Range.clip(strafe, -1.0, 1.0);
 
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
             // rightPower = -gamepad1.right_stick_y ;
 
+            if (gamepad1.right_bumper) {
+                multiplier = 0.5;
+            }
+
             // Send calculated power to wheels
-            LFDrive.setPower(leftPower - strafePower);
-            RFDrive.setPower(rightPower + strafePower);
-            LBDrive.setPower(leftPower + strafePower);
-            RBDrive.setPower(rightPower - strafePower);
+            RobotHardware.LFDrive.setPower((leftPower + strafePower) * multiplier);
+            RobotHardware.RFDrive.setPower((rightPower + strafePower) * multiplier);
+            RobotHardware.LBDrive.setPower((leftPower - strafePower) * multiplier);
+            RobotHardware.RBDrive.setPower((rightPower - strafePower) * multiplier);
+            //RobotHardware.Carousel.setPower(gamepad1.a ? 0 : 1);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Motors", "left (%.2f), right (%.2f), strafe (%2.f)", leftPower, rightPower, strafePower);
             telemetry.update();
         }
     }
+
+
 }
