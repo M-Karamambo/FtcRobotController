@@ -55,19 +55,22 @@ public class BasicOpMode extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        /*
-        LFDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
-        RFDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        LBDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
-        RBDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        CarouselSpin = hardwareMap.get(DcMotor.class, "carousel_spinner");
-        */
+        // Initialize the hardware variables. Note that the strings used here as parameters
+        // to 'get' must correspond to the names assigned during the robot configuration
+        // step (using the FTC Robot Controller app on the phone).
+//            LFDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
+//            RFDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+//            LBDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
+//            RBDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
 
-        RobotHardware.LFDrive.setDirection(DcMotor.Direction.FORWARD);
-        RobotHardware.RFDrive.setDirection(DcMotor.Direction.REVERSE);
-        RobotHardware.LBDrive.setDirection(DcMotor.Direction.FORWARD);
-        RobotHardware.RBDrive.setDirection(DcMotor.Direction.REVERSE);
-        // RobotHardware.Carousel.setDirection(DcMotor.Direction.FORWARD);
+        RobotHardware robot = new RobotHardware();
+
+        // Most robots need the motor on one side to be reversed to drive forward
+        // Reverse the motor that runs backwards when connected directly to the battery
+        robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
+        robot.RFDrive.setDirection(DcMotor.Direction.REVERSE);
+        robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
+        robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -105,11 +108,10 @@ public class BasicOpMode extends LinearOpMode {
             }
 
             // Send calculated power to wheels
-            RobotHardware.LFDrive.setPower((leftPower + strafePower) * multiplier);
-            RobotHardware.RFDrive.setPower((rightPower + strafePower) * multiplier);
-            RobotHardware.LBDrive.setPower((leftPower - strafePower) * multiplier);
-            RobotHardware.RBDrive.setPower((rightPower - strafePower) * multiplier);
-            //RobotHardware.Carousel.setPower(gamepad1.a ? 0 : 1);
+            robot.LFDrive.setPower(leftPower + strafePower);
+            robot.RFDrive.setPower(rightPower + strafePower);
+            robot.LBDrive.setPower(leftPower - strafePower);
+            robot.RBDrive.setPower(rightPower - strafePower);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
