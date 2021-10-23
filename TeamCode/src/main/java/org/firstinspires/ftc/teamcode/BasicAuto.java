@@ -61,21 +61,20 @@ public class BasicAuto extends LinearOpMode {
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
+        RobotHardware robot = new RobotHardware();
+        robot.LFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.LBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.RBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        RobotHardware.LFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RobotHardware.RFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RobotHardware.LBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RobotHardware.RBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        RobotHardware.LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RobotHardware.RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RobotHardware.LBDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RobotHardware.RBDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.LBDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.RBDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0",  "Starting at %7d :%7d",
