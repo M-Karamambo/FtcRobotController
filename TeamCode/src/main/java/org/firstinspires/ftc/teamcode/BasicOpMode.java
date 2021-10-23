@@ -36,29 +36,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
 
-@TeleOp
-
-public class BasicOpMode_Linear extends LinearOpMode {
+public class BasicOpMode extends LinearOpMode {
 
     // Declare OpMode members.
-        private ElapsedTime runtime = new ElapsedTime();
-//        private DcMotor LFDrive = null;
-//        private DcMotor RFDrive = null;
-//        private DcMotor LBDrive = null;
-//        private DcMotor RBDrive = null;
+    private ElapsedTime runtime = new ElapsedTime();
+    /*
+    private DcMotor LFDrive = null;
+    private DcMotor RFDrive = null;
+    private DcMotor LBDrive = null;
+    private DcMotor RBDrive = null;
+    private DcMotor CarouselSpin = null;
+    */
 
     @Override
     public void runOpMode() {
@@ -94,6 +84,8 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double rightPower;
             double strafePower;
 
+            double multiplier = 1.0;
+
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
 
@@ -103,13 +95,17 @@ public class BasicOpMode_Linear extends LinearOpMode {
             double strafe = -gamepad1.left_stick_x;
             double turn  =  gamepad1.right_stick_x;
             leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
-            strafePower = Range.clip(strafe, -1.0, 1.0);
             rightPower = Range.clip(drive - turn, -1.0, 1.0) ;
+            strafePower = Range.clip(strafe, -1.0, 1.0);
 
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
             // rightPower = -gamepad1.right_stick_y ;
+
+            if (gamepad1.right_bumper) {
+                multiplier = 0.5;
+            }
 
             // Send calculated power to wheels
             robot.LFDrive.setPower(leftPower + strafePower);
@@ -119,8 +115,10 @@ public class BasicOpMode_Linear extends LinearOpMode {
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+            telemetry.addData("Motors", "left (%.2f), right (%.2f), strafe (%2.f)", leftPower, rightPower, strafePower);
             telemetry.update();
         }
     }
+
+
 }
