@@ -32,32 +32,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
-class BasicOpMode_Linear extends LinearOpMode {
+@TeleOp(name="Basic: Linear OpMode.v1", group="Linear Opmode")
+public class BasicOpMode extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-
             RobotHardware robot = new RobotHardware();
-
-            // Most robots need the motor on one side to be reversed to drive forward
-            // Reverse the motor that runs backwards when connected directly to the battery
+            robot.init(hardwareMap);
+            //Magic piece of code does something important
             robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
             robot.RFDrive.setDirection(DcMotor.Direction.REVERSE);
             robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -72,6 +58,8 @@ class BasicOpMode_Linear extends LinearOpMode {
                 double leftPower;
                 double rightPower;
                 double strafePower;
+
+                double multiplier = 1;
                 // Choose to drive using either Tank Mode, or POV Mode
                 // Comment out the method that's not used.  The default below is POV.
                 // POV Mode uses left stick to go forward, and right stick to turn.
@@ -82,12 +70,14 @@ class BasicOpMode_Linear extends LinearOpMode {
                 leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
                 strafePower = Range.clip(strafe, -1.0, 1.0);
                 rightPower = Range.clip(drive - turn, -1.0, 1.0) ;
-
-                robot.LFDrive.setPower(leftPower + strafePower);
-                robot.RFDrive.setPower(rightPower + strafePower);
-                robot.LBDrive.setPower(leftPower - strafePower);
-                robot.RBDrive.setPower(rightPower - strafePower);
-
+                if(gamepad1.right_bumper == true){
+                    multiplier = 0.5;
+                }
+                robot.LFDrive.setPower((leftPower + strafePower)*multiplier);
+                robot.RFDrive.setPower((rightPower + strafePower)*multiplier);
+                robot.LBDrive.setPower((leftPower - strafePower)*multiplier);
+                robot.RBDrive.setPower((rightPower - strafePower)*multiplier);
+//                robot.Carousel.setPower(gamepad1.b ? 1 : 0);
                 // Show the elapsed game time and wheel power.
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
                 telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
