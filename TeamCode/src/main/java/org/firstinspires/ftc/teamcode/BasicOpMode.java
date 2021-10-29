@@ -30,17 +30,19 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Basic: Linear OpMode.v1", group="Linear Opmode")
+@TeleOp(name="Basic: Linear OpMode.v1.4", group="Linear Opmode")
 public class BasicOpMode extends LinearOpMode {
-
-    // Declare OpMode members.
+    // initialize telemetry
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
+
+            // initialize the hardware map
             RobotHardware robot = new RobotHardware();
             robot.init(hardwareMap);
             //Magic piece of code does something important
@@ -49,38 +51,38 @@ public class BasicOpMode extends LinearOpMode {
             robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
             robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
 
-            // Wait for the game to start (driver presses PLAY)
+            // Wait for start
             waitForStart();
             runtime.reset();
-            // run until the end of the match (driver presses STOP)
+
             while (opModeIsActive()) {
-                // Setup a variable for each drive wheel to save power level for telemetry
+                // power
                 double leftPower;
                 double rightPower;
                 double strafePower;
-
+                // multiplier for slow mode
                 double multiplier = 1;
-                // Choose to drive using either Tank Mode, or POV Mode
-                // Comment out the method that's not used.  The default below is POV.
-                // POV Mode uses left stick to go forward, and right stick to turn.
-                // - This uses basic math to combine motions and is easier to drive straight.
+                // check for controller inputs
                 double drive = -gamepad1.left_stick_y;
                 double strafe = -gamepad1.left_stick_x;
                 double turn  =  gamepad1.right_stick_x;
+                // process inputs
                 leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
                 strafePower = Range.clip(strafe, -1.0, 1.0);
                 rightPower = Range.clip(drive - turn, -1.0, 1.0) ;
-                if(gamepad1.right_bumper == true){
+                if(gamepad1.right_bumper){
                     multiplier = 0.5;
                 }
-                robot.LFDrive.setPower((leftPower + strafePower)*multiplier);
+                // set power
+                robot.LFDrive.setPower((leftPower - strafePower)*multiplier);
                 robot.RFDrive.setPower((rightPower + strafePower)*multiplier);
-                robot.LBDrive.setPower((leftPower - strafePower)*multiplier);
+                robot.LBDrive.setPower((leftPower + strafePower)*multiplier);
                 robot.RBDrive.setPower((rightPower - strafePower)*multiplier);
-//                robot.Carousel.setPower(gamepad1.b ? 1 : 0);
-                // Show the elapsed game time and wheel power.
+                robot.Carousel.setPower(gamepad1.b ? 1 : 0); // this also may not work
+
+                // Show the elapsed game time and wheel power. Telemetry
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
-                telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+                telemetry.addData("Motors", "left (%.2f), right (%.2f), strafe (%.2f), carouselpower (%.2b)", leftPower, rightPower, strafePower, gamepad1.b);
                 telemetry.update();
             }
         }
