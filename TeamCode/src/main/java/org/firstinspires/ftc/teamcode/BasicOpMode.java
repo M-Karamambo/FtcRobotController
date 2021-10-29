@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Basic: Linear OpMode.v1.5.2", group="Linear Opmode")
+@TeleOp(name="Basic: Linear OpMode.v1.6.1", group="Linear Opmode")
 public class BasicOpMode extends LinearOpMode {
     // initialize telemetry
     private ElapsedTime runtime = new ElapsedTime();
@@ -17,11 +17,7 @@ public class BasicOpMode extends LinearOpMode {
             // initialize the hardware map
             RobotHardware robot = new RobotHardware();
             robot.init(hardwareMap);
-            //Magic piece of code does something important
-            robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
-            robot.RFDrive.setDirection(DcMotor.Direction.REVERSE);
-            robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
-            robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
+
 
             // Wait for start
             waitForStart();
