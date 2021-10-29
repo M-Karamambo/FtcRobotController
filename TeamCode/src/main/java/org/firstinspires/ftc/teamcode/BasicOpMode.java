@@ -32,6 +32,7 @@ public class BasicOpMode extends LinearOpMode {
                 double leftPower;
                 double rightPower;
                 double strafePower;
+                double carouselPower = 0;
                 // multiplier for slow mode
                 double multiplier = 1;
                 // check for controller inputs
@@ -47,16 +48,16 @@ public class BasicOpMode extends LinearOpMode {
                 }
                 if(gamepad1.b == true){// should slowly increase motor speed to not send ducks flying
                                        //[TODO] test this
-                    strafePower+=0.1;
+                    carouselPower+=0.1;
                 }else{
-                    strafePower = 0;
+                    carouselPower = 0;
                 }
                 // set power
                 robot.LFDrive.setPower((leftPower - strafePower)*multiplier);
                 robot.RFDrive.setPower((rightPower + strafePower)*multiplier);
                 robot.LBDrive.setPower((leftPower + strafePower)*multiplier);
                 robot.RBDrive.setPower((rightPower - strafePower)*multiplier);
-                robot.Carousel.setPower(gamepad1.b ? 1 : 0); // this also may not work
+                robot.Carousel.setPower(gamepad1.b ? carouselPower : 0); // this also may not work
 
                 // Show the elapsed game time and wheel power. Telemetry
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
