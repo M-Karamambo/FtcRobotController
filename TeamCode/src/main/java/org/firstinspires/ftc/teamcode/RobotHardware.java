@@ -26,6 +26,6 @@ public class RobotHardware {
         RFDrive.setDirection(DcMotor.Direction.REVERSE);
         LBDrive.setDirection(DcMotor.Direction.FORWARD);
         RBDrive.setDirection(DcMotor.Direction.REVERSE);
-        }
+    }
 
 }
