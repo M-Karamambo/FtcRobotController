@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Basic: Linear OpMode.v1.5", group="Linear Opmode")
+@TeleOp(name="Basic: Linear OpMode.v1.6.1", group="Linear Opmode")
 public class BasicOpMode extends LinearOpMode {
     // initialize telemetry
     private ElapsedTime runtime = new ElapsedTime();
@@ -17,22 +17,18 @@ public class BasicOpMode extends LinearOpMode {
             // initialize the hardware map
             RobotHardware robot = new RobotHardware();
             robot.init(hardwareMap);
-            //Magic piece of code does something important
-            robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
-            robot.RFDrive.setDirection(DcMotor.Direction.REVERSE);
-            robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
-            robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
+
 
             // Wait for start
             waitForStart();
             runtime.reset();
-
+            double leftPower;
+            double rightPower;
+            double strafePower;
+            double carouselPower = 0.1;
             while (opModeIsActive()) {
                 // power
-                double leftPower;
-                double rightPower;
-                double strafePower;
-                double carouselPower = 0;
+
                 // multiplier for slow mode
                 double multiplier = 1;
                 // check for controller inputs
@@ -43,25 +39,32 @@ public class BasicOpMode extends LinearOpMode {
                 leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
                 strafePower = Range.clip(strafe, -1.0, 1.0);
                 rightPower = Range.clip(drive - turn, -1.0, 1.0) ;
-                if(gamepad1.right_bumper){
-                    multiplier = 0.5;
+                if(gamepad1.right_bumper) multiplier = 0.5;
+                // should slowly increase motor speed to not send ducks flying
+
+                if(gamepad1.b || gamepad1.y){
+                    carouselPower += 0.0025;
                 }
-                if(gamepad1.b == true){// should slowly increase motor speed to not send ducks flying
-                                       //[TODO] test this
-                    carouselPower+=0.1;
-                }else{
+                else{
                     carouselPower = 0;
                 }
+
                 // set power
                 robot.LFDrive.setPower((leftPower - strafePower)*multiplier);
                 robot.RFDrive.setPower((rightPower + strafePower)*multiplier);
                 robot.LBDrive.setPower((leftPower + strafePower)*multiplier);
                 robot.RBDrive.setPower((rightPower - strafePower)*multiplier);
-                robot.Carousel.setPower(gamepad1.b ? carouselPower : 0); // this also may not work
+                if(gamepad1.b) {
+                    robot.Carousel.setDirection(DcMotor.Direction.FORWARD);
+                }
+                if(gamepad1.y) {
+                    robot.Carousel.setDirection(DcMotor.Direction.REVERSE);
+                }
+                robot.Carousel.setPower(((gamepad1.b || gamepad1.y) ? carouselPower : 0)*multiplier);
 
                 // Show the elapsed game time and wheel power. Telemetry
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
-                telemetry.addData("Motors", "left (%.2f), right (%.2f), strafe (%.2f), carouselpower (%.2b)", leftPower, rightPower, strafePower, gamepad1.b);
+                telemetry.addData("Motors", "left (%.2f), right (%.2f), strafe (%.2f), b-button (%.2b), carouselPower(%.2f)", leftPower, rightPower, strafePower, gamepad1.b, carouselPower);
                 telemetry.update();
             }
         }
