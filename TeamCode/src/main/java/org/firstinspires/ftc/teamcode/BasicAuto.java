@@ -32,21 +32,21 @@ public class BasicAuto extends LinearOpMode {
         telemetry.update();
 
         robot.autoinit(hardwareMap); //[TODO] Test this
-        robot.LFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.LBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.RBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.LBDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        robot.RBDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
-        robot.RFDrive.setDirection(DcMotor.Direction.REVERSE);
-        robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
-        robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
-        // Send telemetry message to indicate successful Encoder reset
+//        robot.LFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.RFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.LBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        robot.RBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//
+//        robot.LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        robot.RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        robot.LBDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        robot.RBDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//        robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
+//        robot.RFDrive.setDirection(DcMotor.Direction.REVERSE);
+//        robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
+//        robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
+//        // Send telemetry message to indicate successful Encoder reset
 
         telemetry.addData("Path0",  "Starting at %7d :%7d",
                 robot.LFDrive.getCurrentPosition(),
@@ -83,7 +83,7 @@ public class BasicAuto extends LinearOpMode {
             robot.LFDrive.setDirection(DcMotor.Direction.REVERSE);
             robot.LBDrive.setDirection(DcMotor.Direction.REVERSE);
             encoderDrive(speed, -realangle, realangle, timeout);
-            }
+        }
 
     }
 
