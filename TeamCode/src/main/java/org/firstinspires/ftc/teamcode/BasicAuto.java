@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
-@Autonomous(name="R1", group="Pushbot")
+@Autonomous(name="R1x1.3", group="Pushbot")
 // @Disabled
 public class BasicAuto extends LinearOpMode {
 
@@ -25,17 +25,13 @@ public class BasicAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
-        /*
-         * Initialize the drive system variables.
-         * The init() method of the hardware class does all the work here
-         */
         robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
         telemetry.update();
 
+        robot.autoinit(hardwareMap); //[TODO] Test this
         robot.LFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.RFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         robot.LBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -62,47 +58,34 @@ public class BasicAuto extends LinearOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // Step through each leg of the path,
-        // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        //encoderDrive(DRIVE_SPEED,  7,  7, 15.0);
-        forward(DRIVE_SPEED, 8, 3);
-        turn(TURN_SPEED, 90, 3);
+        turn(TURN_SPEED, 45, 3);
+        strafe(DRIVE_SPEED, 8, 3);
         sleep(1000);     // pause for servos to move
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
-    /*
-     *  Method to perform a relative move, based on encoder counts.
-     *  Encoders are not reset as the move is based on the current position.
-     *  Move will stop if any of three conditions occur:
-     *  1) Move gets to the desired position
-     *  2) Move runs out of time
-     *  3) Driver stops the opmode running.
-     */
     public void forward(double speed, double inches, double timeout) {
         encoderDrive(DRIVE_SPEED, inches, inches, timeout);
     }
-    public void turn(double speed, double angle, double timeout) {
+    public void turn(double speed, double angle, double timeout) { //[TODO] Test
+        double realangle = angle - 30;
         if (Math.abs(90 - angle) <= Math.abs(270 - angle)) {
-            robot.RFDrive.setDirection(DcMotor.Direction.FORWARD);
-            robot.RBDrive.setDirection(DcMotor.Direction.FORWARD);
-            robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
-            robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
-        } else {
             robot.RFDrive.setDirection(DcMotor.Direction.REVERSE);
             robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
+            robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
+            robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
+            encoderDrive(speed, realangle, -realangle, timeout);
+        } else {
+            robot.RFDrive.setDirection(DcMotor.Direction.FORWARD);
+            robot.RBDrive.setDirection(DcMotor.Direction.FORWARD);
             robot.LFDrive.setDirection(DcMotor.Direction.REVERSE);
             robot.LBDrive.setDirection(DcMotor.Direction.REVERSE);
-        }
+            encoderDrive(speed, -realangle, realangle, timeout);
+            }
 
-        robot.RFDrive.setPower(speed);
-        robot.RBDrive.setPower(speed);
-        robot.LFDrive.setPower(speed);
-        robot.LBDrive.setPower(speed);
     }
-//        encoderDrive(speed, angle, );
 
     public void strafe(double speed, double inches, double timeout) {
         int LFTarget;
@@ -118,7 +101,7 @@ public class BasicAuto extends LinearOpMode {
             robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
 
             // reset the timeout time and start motion.
-            runtime.reset();
+            // runtime.reset();
             robot.LFDrive.setPower(Math.abs(speed));
             robot.RFDrive.setPower(Math.abs(speed));
             robot.LBDrive.setPower(Math.abs(speed));
@@ -176,7 +159,7 @@ public class BasicAuto extends LinearOpMode {
             robot.RBDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             // reset the timeout time and start motion.
-            runtime.reset();
+            // runtime.reset();
             robot.LFDrive.setPower(Math.abs(speed));
             robot.RFDrive.setPower(Math.abs(speed));
             robot.LBDrive.setPower(Math.abs(speed));
