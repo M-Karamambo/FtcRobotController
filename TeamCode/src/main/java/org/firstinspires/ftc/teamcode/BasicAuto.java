@@ -17,8 +17,8 @@ public class BasicAuto extends LinearOpMode {
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double     DRIVE_SPEED             = 0.5;
+            (WHEEL_DIAMETER_INCHES * Math.PI);
+    static final double     DRIVE_SPEED             = 0.01;
     static final double     TURN_SPEED              = 0.5;
 
     @Override
@@ -45,17 +45,12 @@ public class BasicAuto extends LinearOpMode {
         encoderDrive(DRIVE_SPEED, 35, 35, 10);
         sleep(1500);
         forward(DRIVE_SPEED, 40, 10);
-        sleep(1500);
         turn(TURN_SPEED, 90, 4);
         sleep(1500);
         forward(DRIVE_SPEED, 10, 0.75 );
         sleep(1500);
 //        strafe(DRIVE_SPEED, -8, 6);
         sleep(1000);     // pause for servos to move
-        //-------------------------------------------------//
-
-        telemetry.addData("Path", "Complete");
-        telemetry.update();
     }
 
     public void forward(double speed, double inches, double timeout) {
@@ -64,16 +59,16 @@ public class BasicAuto extends LinearOpMode {
     public void turn(double speed, double angle, double timeout) { //Angles are not accurate
         double realangle = (136* Math.PI)*(angle/360);
         if (Math.abs(90 - angle) <= Math.abs(270 - angle)) {
-            robot.RFDrive.setDirection(DcMotor.Direction.REVERSE);
-            robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
             robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
+            robot.RFDrive.setDirection(DcMotor.Direction.REVERSE);
             robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
+            robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
             encoderDrive(speed, realangle, -realangle, timeout);
         } else {
-            robot.RFDrive.setDirection(DcMotor.Direction.FORWARD);
-            robot.RBDrive.setDirection(DcMotor.Direction.FORWARD);
             robot.LFDrive.setDirection(DcMotor.Direction.REVERSE);
+            robot.RFDrive.setDirection(DcMotor.Direction.FORWARD);
             robot.LBDrive.setDirection(DcMotor.Direction.REVERSE);
+            robot.RBDrive.setDirection(DcMotor.Direction.FORWARD);
             encoderDrive(speed, -realangle, realangle, timeout);
         }
 
@@ -81,19 +76,23 @@ public class BasicAuto extends LinearOpMode {
 
     public void strafe(double speed, double inches, double timeoutS) {
 
+        int LFTarget;
+        int RFTarget;
+        int LBTarget;
+        int RBTarget;
+
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
-            if (inches >= 0) {
-                robot.LFDrive.setDirection(DcMotor.Direction.REVERSE);
-                robot.RFDrive.setDirection(DcMotor.Direction.REVERSE);
-                robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
-                robot.RBDrive.setDirection(DcMotor.Direction.FORWARD);
-            } else {
-                robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
-                robot.RFDrive.setDirection(DcMotor.Direction.FORWARD);
-                robot.LBDrive.setDirection(DcMotor.Direction.REVERSE);
-                robot.RBDrive.setDirection(DcMotor.Direction.REVERSE);
-            }
+
+            LFTarget = robot.LFDrive.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+            RFTarget = robot.RFDrive.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
+            LBTarget = robot.LBDrive.getCurrentPosition() - (int)(inches * COUNTS_PER_INCH);
+            RBTarget = robot.RBDrive.getCurrentPosition() + (int)(inches * COUNTS_PER_INCH);
+
+            robot.LFDrive.setTargetPosition(LFTarget);
+            robot.RFDrive.setTargetPosition(RFTarget);
+            robot.LBDrive.setTargetPosition(LBTarget);
+            robot.RBDrive.setTargetPosition(RBTarget);
 
             // reset the timeout time and start motion.
             runtime.reset();
@@ -102,20 +101,23 @@ public class BasicAuto extends LinearOpMode {
             robot.LBDrive.setPower(Math.abs(speed));
             robot.RBDrive.setPower(Math.abs(speed));
 
-//            while (opModeIsActive() &&
-//                    (runtime.seconds() < timeoutS) &&
-//                    (robot.LFDrive.isBusy() && robot.RFDrive.isBusy() && robot.LBDrive.isBusy() && robot.RBDrive.isBusy())) {
-//
-//                // Display it for the driver.
-//                telemetry.addData("Path1",  "Running to %7d :%7d", LFTarget,  RFTarget, LBTarget, RBTarget);
-//                telemetry.addData("Path2",  "Running at %7d :%7d",
-//                        robot.LFDrive.getCurrentPosition(),
-//                        robot.RFDrive.getCurrentPosition(),
-//                        robot.LBDrive.getCurrentPosition(),
-//                        robot.RBDrive.getCurrentPosition());
-//                telemetry.update();
-//            }
-        }
+            // Turn On RUN_TO_POSITION
+            robot.LFDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.RFDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.LBDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.RBDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.LFDrive.isBusy() && robot.RFDrive.isBusy() && robot.LBDrive.isBusy() && robot.RBDrive.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1",  "Running to %7d :%7d", LFTarget,  RFTarget);
+                telemetry.addData("Path2",  "Running at %7d :%7d",
+                        robot.RFDrive.getCurrentPosition(),
+                        robot.RBDrive.getCurrentPosition());
+                telemetry.update();
+            }
 
 
         robot.LFDrive.setPower(0);
