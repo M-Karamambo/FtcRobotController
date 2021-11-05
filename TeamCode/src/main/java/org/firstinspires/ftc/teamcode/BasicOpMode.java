@@ -33,7 +33,7 @@ public class BasicOpMode extends LinearOpMode {
                 double multiplier = 1;
                 // check for controller inputs
                 double drive = -gamepad1.left_stick_y;
-                double strafe = -gamepad1.left_stick_x;
+                double strafe = gamepad1.left_stick_x;
                 double turn  =  gamepad1.right_stick_x;
                 // process inputs
                 leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
@@ -50,10 +50,10 @@ public class BasicOpMode extends LinearOpMode {
                 }
 
                 // set power
-                robot.LFDrive.setPower((leftPower - strafePower)*multiplier);
-                robot.RFDrive.setPower((rightPower + strafePower)*multiplier);
-                robot.LBDrive.setPower((leftPower + strafePower)*multiplier);
-                robot.RBDrive.setPower((rightPower - strafePower)*multiplier);
+                robot.LFDrive.setPower((leftPower + strafePower)*multiplier);
+                robot.RFDrive.setPower((rightPower - strafePower)*multiplier);
+                robot.LBDrive.setPower((leftPower - strafePower)*multiplier);
+                robot.RBDrive.setPower((rightPower + strafePower)*multiplier);
                 if(gamepad1.b) {
                     robot.Carousel.setDirection(DcMotor.Direction.FORWARD);
                 }
