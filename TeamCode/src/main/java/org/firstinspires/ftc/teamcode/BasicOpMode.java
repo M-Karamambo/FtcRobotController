@@ -25,6 +25,8 @@ public class BasicOpMode extends LinearOpMode {
             double rightPower;
             double strafePower;
             double carouselPower = 0.1;
+            double servoAngle = 90;
+
             while (opModeIsActive()) {
 
                 // multiplier for slow mode
@@ -48,6 +50,13 @@ public class BasicOpMode extends LinearOpMode {
                     carouselPower = 0;
                 }
 
+                if (servoAngle < 180 && gamepad1.right_trigger > 0) {
+                    carouselPower += 1;
+                }
+                if (servoAngle > 0 && gamepad1.left_trigger > 0) {
+                    carouselPower -= 1;
+                }
+
                 // set power
                 robot.LFDrive.setPower((leftPower + strafePower)*multiplier);
                 robot.RFDrive.setPower((rightPower - strafePower)*multiplier);
@@ -60,6 +69,7 @@ public class BasicOpMode extends LinearOpMode {
                     robot.Carousel.setDirection(DcMotor.Direction.REVERSE);
                 }
                 robot.Carousel.setPower(((gamepad1.b || gamepad1.y) ? carouselPower : 0)*multiplier);
+                robot.ClawCenter.setPosition(servoAngle);
 
                 // Show the elapsed game time and wheel power. Telemetry
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
