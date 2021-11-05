@@ -107,6 +107,15 @@ public class BasicAuto extends LinearOpMode {
             robot.LBDrive.setPower(Math.abs(speed));
             robot.RBDrive.setPower(Math.abs(speed));
 
+<<<<<<< Updated upstream
+=======
+            // Turn On RUN_TO_POSITION
+            robot.LFDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.RFDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.LBDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.RBDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+>>>>>>> Stashed changes
             while (opModeIsActive() &&
                     (runtime.seconds() < timeout) &&
                     (robot.LFDrive.isBusy() && robot.RFDrive.isBusy() && robot.LBDrive.isBusy() && robot.RBDrive.isBusy())) {
