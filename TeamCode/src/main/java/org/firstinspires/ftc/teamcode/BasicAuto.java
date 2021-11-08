@@ -74,6 +74,11 @@ public class BasicAuto extends LinearOpMode {
 
     public void strafe(double speed, double inches, double timeoutS) {
 
+        int LFTarget;
+        int RFTarget;
+        int LBTarget;
+        int RBTarget;
+
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 

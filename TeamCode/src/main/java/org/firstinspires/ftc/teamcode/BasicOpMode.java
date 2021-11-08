@@ -50,11 +50,11 @@ public class BasicOpMode extends LinearOpMode {
                     carouselPower = 0;
                 }
 
-                if (servoAngle < 180 && gamepad1.right_trigger > 0) {
-                    carouselPower += 1;
+                if (gamepad1.right_trigger > 0) {
+                    servoAngle += 1;
                 }
-                if (servoAngle > 0 && gamepad1.left_trigger > 0) {
-                    carouselPower -= 1;
+                if (gamepad1.left_trigger > 0) {
+                    servoAngle -= 1;
                 }
 
                 // set power
@@ -73,8 +73,8 @@ public class BasicOpMode extends LinearOpMode {
 
                 // Show the elapsed game time and wheel power. Telemetry
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
-                telemetry.addData("Motors", "left (%.2f), right (%.2f), strafe (%.2f), b-button (%.2b), carouselPower(%.2f)",
-                        leftPower, rightPower, strafePower, gamepad1.b, carouselPower);
+                telemetry.addData("Motors", "left (%.2f), right (%.2f), strafe (%.2f), b-button (%.2b), carouselPower(%.2f), servoAngle(%.2f)",
+                        leftPower, rightPower, strafePower, gamepad1.b, carouselPower, servoAngle);
                 telemetry.update();
             }
         }
