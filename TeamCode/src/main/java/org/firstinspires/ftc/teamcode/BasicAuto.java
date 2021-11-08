@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
-@Autonomous(name="R1x1.4.2", group="Red")
+@Autonomous(name="TestRun", group="Red")
 public class BasicAuto extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -44,13 +44,17 @@ public class BasicAuto extends LinearOpMode {
         //-------------------------------------------------//
         encoderDrive(DRIVE_SPEED, 35, 35, 10);
         sleep(1500);
-        forward(DRIVE_SPEED, 40, 10);
+        forward(DRIVE_SPEED, 1, 10);
         sleep(1500);
-        turn(TURN_SPEED, 90, 4);
+        forward(DRIVE_SPEED, 3, 10);
         sleep(1500);
-        forward(DRIVE_SPEED, 10, 0.75);
+        turn(TURN_SPEED, 90, 10);
         sleep(1500);
-//        strafe(DRIVE_SPEED, -8, 6);
+        turn(TURN_SPEED, 180, 10);
+        sleep(1500);
+        turn(TURN_SPEED, 90, 10);
+        sleep(1500);
+        strafe(DRIVE_SPEED, -8, 10);
         sleep(1000);     // pause for servos to move
         //-------------------------------------------------//
 
