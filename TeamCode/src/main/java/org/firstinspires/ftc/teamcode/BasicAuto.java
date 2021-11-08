@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
-@Autonomous(name="R1x1.4.1", group="Red")
+@Autonomous(name="R1x1.4.2", group="Red")
 public class BasicAuto extends LinearOpMode {
 
     /* Declare OpMode members. */
@@ -18,7 +18,7 @@ public class BasicAuto extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
-    static final double DRIVE_SPEED = 0.01;
+    static final double DRIVE_SPEED = 0.5;
     static final double TURN_SPEED = 0.5;
 
     @Override
