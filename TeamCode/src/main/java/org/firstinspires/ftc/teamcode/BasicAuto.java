@@ -42,11 +42,11 @@ public class BasicAuto extends LinearOpMode {
         waitForStart();
 
         //-------------------------------------------------//
-        encoderDrive(DRIVE_SPEED, 35, 35, 10);
-        sleep(1500);
-        forward(DRIVE_SPEED, 1, 10);
+        // encoderDrive(DRIVE_SPEED, 35, 35, 10);
         sleep(1500);
         forward(DRIVE_SPEED, 3, 10);
+        sleep(1500);
+        forward(DRIVE_SPEED, 5, 10);
         sleep(1500);
         turn(TURN_SPEED, 90, 10);
         sleep(1500);
@@ -55,6 +55,8 @@ public class BasicAuto extends LinearOpMode {
         turn(TURN_SPEED, 90, 10);
         sleep(1500);
         strafe(DRIVE_SPEED, -8, 10);
+        sleep(1500);
+        duck(TURN_SPEED, 1);
         sleep(1000);     // pause for servos to move
         //-------------------------------------------------//
 
@@ -127,6 +129,19 @@ public class BasicAuto extends LinearOpMode {
             robot.LBDrive.setPower(0);
             robot.RBDrive.setPower(0);
 
+        }
+    }
+
+    public void duck(double spin, double timeoutS) {
+        if (opModeIsActive()) {
+            robot.Carousel.setPower(spin); // No idea what this value should be
+
+            while (opModeIsActive() && runtime.seconds() < timeoutS) {
+                telemetry.addData("Spinning speed", spin);
+                telemetry.update();
+            }
+
+            robot.Carousel.setPower(0);
         }
     }
 

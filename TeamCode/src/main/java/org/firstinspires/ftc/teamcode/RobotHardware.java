@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 public class RobotHardware {
-    public final String VER = "1.6.2";
+    public final String VER = "1.6.3";
     public RobotHardware() {}
     public HardwareMap hmap;
     public DcMotor LFDrive;
