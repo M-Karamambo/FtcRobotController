@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
@@ -19,7 +20,7 @@ public class BasicAuto extends LinearOpMode {
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double DRIVE_SPEED = 0.5;
-    static final double TURN_SPEED = 0.5;
+    static final double TURN_SPEED = 0.05;
 
     @Override
     public void runOpMode() {
@@ -44,20 +45,10 @@ public class BasicAuto extends LinearOpMode {
         //-------------------------------------------------//
         // encoderDrive(DRIVE_SPEED, 35, 35, 10);
         sleep(1500);
-        forward(DRIVE_SPEED, 3, 10);
+        empiTurn(90);
         sleep(1500);
-        forward(DRIVE_SPEED, 5, 10);
-        sleep(1500);
-        turn(TURN_SPEED, 90, 10);
-        sleep(1500);
-        turn(TURN_SPEED, 180, 10);
-        sleep(1500);
-        turn(TURN_SPEED, 90, 10);
-        sleep(1500);
-        strafe(DRIVE_SPEED, -8, 10);
-        sleep(1500);
-        duck(TURN_SPEED, 1);
-        sleep(1000);     // pause for servos to move
+        turn(TURN_SPEED, 90, 2);
+        sleep(1500);     // pause for servos to move
         //-------------------------------------------------//
 
         telemetry.addData("Path", "Complete");
@@ -68,8 +59,33 @@ public class BasicAuto extends LinearOpMode {
         encoderDrive(speed, inches, inches, timeout);
     }
 
+    public void empiTurn(double angle) {
+        double timeoutS = angle / 90.0 * 2; // Constant to be tuned
+
+        while (opModeIsActive()) {
+
+//            robot.LFDrive.setDirection(DcMotor.Direction.FORWARD);
+//            robot.RFDrive.setDirection(DcMotor.Direction.FORWARD);
+//            robot.LBDrive.setDirection(DcMotor.Direction.FORWARD);
+//            robot.RBDrive.setDirection(DcMotor.Direction.FORWARD);
+
+
+            while (runtime.seconds() < timeoutS) {
+                robot.LFDrive.setPower(TURN_SPEED);
+                robot.RFDrive.setPower(TURN_SPEED);
+                robot.LBDrive.setPower(TURN_SPEED);
+                robot.RBDrive.setPower(TURN_SPEED);
+            }
+
+            robot.LFDrive.setPower(0);
+            robot.RFDrive.setPower(0);
+            robot.LBDrive.setPower(0);
+            robot.RBDrive.setPower(0);
+        }
+    }
+
     public void turn(double speed, double angle, double timeout) { //Angles are not accurate
-        double realangle = (136 * Math.PI) * (angle / 360);
+        double realangle = (((15.3 * Math.PI * angle) / (360))*2)-45;
         if (Math.abs(90 - angle) <= Math.abs(270 - angle)) {
             encoderDrive(speed, realangle, -realangle, timeout);
         } else {
@@ -123,7 +139,6 @@ public class BasicAuto extends LinearOpMode {
                 telemetry.update();
             }
 
-
             robot.LFDrive.setPower(0);
             robot.RFDrive.setPower(0);
             robot.LBDrive.setPower(0);
@@ -132,11 +147,14 @@ public class BasicAuto extends LinearOpMode {
         }
     }
 
-    public void duck(double spin, double timeoutS) {
-        if (opModeIsActive()) {
-            robot.Carousel.setPower(spin); // No idea what this value should be
+    public void duck(double timeoutS) {
 
+        double spin = 0;
+
+        if (opModeIsActive()) {
             while (opModeIsActive() && runtime.seconds() < timeoutS) {
+                spin += 0.0025;
+                robot.Carousel.setPower(spin);
                 telemetry.addData("Spinning speed", spin);
                 telemetry.update();
             }

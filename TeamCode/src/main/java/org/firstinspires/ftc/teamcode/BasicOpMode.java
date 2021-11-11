@@ -50,6 +50,7 @@ public class BasicOpMode extends LinearOpMode {
                     carouselPower = 0;
                 }
 
+
                 if (servoAngle < 1 && gamepad1.right_trigger > 0) {
                     servoAngle += 0.0005;
                 }
