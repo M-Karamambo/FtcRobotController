@@ -15,7 +15,7 @@ public class RobotHardware {
     public DcMotor Carousel;
 
     public Servo ClawCenter;
-    // public Servo ClawLeft;
+    public Servo ClawLeft;
     // public Servo ClawRight;
 
     public void init(HardwareMap myHmap){
@@ -27,7 +27,7 @@ public class RobotHardware {
         Carousel = hmap.get(DcMotor.class, "carousel_spinner");
 
         ClawCenter = hmap.get(Servo.class, "claw_center");
-        // ClawLeft = hmap.get(Servo.class, "claw_left");
+        ClawLeft = hmap.get(Servo.class, "claw_left");
         // ClawRight = hmap.get(Servo.class, "claw_right");
 
         LFDrive.setDirection(DcMotor.Direction.FORWARD);

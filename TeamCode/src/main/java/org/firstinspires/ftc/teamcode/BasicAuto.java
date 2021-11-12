@@ -47,7 +47,7 @@ public class BasicAuto extends LinearOpMode {
         sleep(1500);
         empiTurn(90);
         sleep(1500);
-        turn(TURN_SPEED, 90, 2);
+        turn(TURN_SPEED, 90, 5);
         sleep(1500);     // pause for servos to move
         //-------------------------------------------------//
 

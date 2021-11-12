@@ -25,7 +25,8 @@ public class BasicOpMode extends LinearOpMode {
             double rightPower;
             double strafePower;
             double carouselPower = 0.1;
-            double servoAngle = 1;
+            double servoCenterAngle = 1;
+            double servoSideAngle = 1;
 
             while (opModeIsActive()) {
 
@@ -50,12 +51,18 @@ public class BasicOpMode extends LinearOpMode {
                     carouselPower = 0;
                 }
 
-
-                if (servoAngle < 1 && gamepad1.right_trigger > 0) {
-                    servoAngle += 0.0005;
+                if (servoSideAngle < 1 && gamepad2.right_bumper) {
+                    servoSideAngle += 0.0005;
                 }
-                if (servoAngle > 0 && gamepad1.left_trigger > 0) {
-                    servoAngle -= 0.0005;
+                if (servoSideAngle > 0 && gamepad2.left_bumper) {
+                    servoSideAngle -= 0.0005;
+                }
+
+                if (servoCenterAngle < 1 && gamepad2.right_trigger > 0) {
+                    servoCenterAngle += 0.0005;
+                }
+                if (servoCenterAngle > 0 && gamepad2.left_trigger > 0) {
+                    servoCenterAngle -= 0.0005;
                 }
 
                 // set power
@@ -70,12 +77,15 @@ public class BasicOpMode extends LinearOpMode {
                     robot.Carousel.setDirection(DcMotor.Direction.REVERSE);
                 }
                 robot.Carousel.setPower(((gamepad1.b || gamepad1.y) ? carouselPower : 0)*multiplier);
-                robot.ClawCenter.setPosition(servoAngle);
+                robot.ClawCenter.setPosition(servoCenterAngle);
+                robot.ClawLeft.setPosition(servoSideAngle);
+                // robot.ClawRight.setPosition(1 - servoSideAngle);
 
                 // Show the elapsed game time and wheel power. Telemetry
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
-                telemetry.addData("Motors", "left (%.2f), right (%.2f), strafe (%.2f), b-button (%.2b), right-trigger (%.2f), carouselPower(%.2f), servoAngle(%.2f)",
-                        leftPower, rightPower, strafePower, gamepad1.b, gamepad1.right_trigger, carouselPower, servoAngle);
+                telemetry.addData("Motors", "left (%.2f), right (%.2f), strafe (%.2f), b-button (%.2b), carouselPower(%.2d)",
+                        leftPower, rightPower, strafePower, gamepad1.b, carouselPower);
+                telemetry.addData("Servos","servoCenterAngle(%.2d), servoSideAngle(%.2d)", servoCenterAngle, servoSideAngle);
                 telemetry.update();
             }
         }
