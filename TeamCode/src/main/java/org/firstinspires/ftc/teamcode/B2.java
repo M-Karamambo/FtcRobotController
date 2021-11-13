@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
-@Autonomous(name="R1", group="Red")
-public class R1 extends LinearOpMode {
+@Autonomous(name="B2", group="Blue")
+public class B2 extends LinearOpMode {
 
     /* Declare OpMode members. */
     RobotHardware robot = new RobotHardware();
@@ -44,15 +44,15 @@ public class R1 extends LinearOpMode {
 
         //-------------------------------------------------//
         sleep(1000);
-        forward(DRIVE_SPEED, -23, 5);
+        strafe(PRECISION_DRIVE_SPEED, -23, 10);
         sleep(1000);
-        strafe(PRECISION_DRIVE_SPEED, 25, 10);
+        forward(DRIVE_SPEED, 73, 5);
         sleep(1000);
-        forward(DRIVE_SPEED, 12, 5);
+        strafe(PRECISION_DRIVE_SPEED, 12, 5);
         sleep(1000);
         duck(5);
         sleep(1000);
-        forward(DRIVE_SPEED, -18, 5);
+        strafe(PRECISION_DRIVE_SPEED, -18, 5);
         //-------------------------------------------------//
 
         telemetry.addData("Path", "Complete");
