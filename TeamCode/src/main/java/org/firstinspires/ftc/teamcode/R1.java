@@ -19,7 +19,7 @@ public class R1 extends LinearOpMode {
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
     static final double DRIVE_SPEED = 0.5;
-    static final double PRECISION_DRIVE_SPEED = 0.2;
+    static final double PRECISION_DRIVE_SPEED = 0.05;
     static final double TURN_SPEED = 0.5;
 
     @Override
@@ -44,15 +44,13 @@ public class R1 extends LinearOpMode {
 
         //-------------------------------------------------//
         sleep(1000);
-        forward(DRIVE_SPEED, -23, 5);
+        forward(PRECISION_DRIVE_SPEED, -23, 0.18);
         sleep(1000);
-        strafe(PRECISION_DRIVE_SPEED, 25, 10);
+        strafe(PRECISION_DRIVE_SPEED, 25, 5/4.0);
         sleep(1000);
-        forward(DRIVE_SPEED, 12, 5);
+        forward(PRECISION_DRIVE_SPEED, 25, 1);
         sleep(1000);
         duck(5);
-        sleep(1000);
-        forward(DRIVE_SPEED, -18, 5);
         //-------------------------------------------------//
 
         telemetry.addData("Path", "Complete");
@@ -60,7 +58,7 @@ public class R1 extends LinearOpMode {
     }
 
     public void forward(double speed, double inches, double timeout) {
-        encoderDrive(speed, inches, inches, timeout);
+        encoderDrive(speed, -inches, -inches, timeout);
     }
 
     public void turn(double speed, double angle, double timeout) { //Angles are not accurate
@@ -99,10 +97,10 @@ public class R1 extends LinearOpMode {
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            LFTarget = robot.LFDrive.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-            RFTarget = robot.RFDrive.getCurrentPosition() - (int) (inches * COUNTS_PER_INCH);
-            LBTarget = robot.LBDrive.getCurrentPosition() - (int) (inches * COUNTS_PER_INCH);
-            RBTarget = robot.RBDrive.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
+            LFTarget = robot.LFDrive.getCurrentPosition() - (int) (inches * COUNTS_PER_INCH);
+            RFTarget = robot.RFDrive.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
+            LBTarget = robot.LBDrive.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
+            RBTarget = robot.RBDrive.getCurrentPosition() - (int) (inches * COUNTS_PER_INCH);
 
             robot.LFDrive.setTargetPosition(LFTarget);
             robot.RFDrive.setTargetPosition(RFTarget);

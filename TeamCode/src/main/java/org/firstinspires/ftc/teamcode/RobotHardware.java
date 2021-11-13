@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -18,6 +19,8 @@ public class RobotHardware {
     public Servo ClawLeft;
     // public Servo ClawRight;
 
+    public DcMotor Slide;
+
     public void init(HardwareMap myHmap){
         hmap = myHmap;
         LFDrive = hmap.get(DcMotor.class, "left_front_drive"); //[TODO] rename these
@@ -29,6 +32,7 @@ public class RobotHardware {
         ClawCenter = hmap.get(Servo.class, "claw_center");
         ClawLeft = hmap.get(Servo.class, "claw_left");
         // ClawRight = hmap.get(Servo.class, "claw_right");
+        // Slide = hmap.get(DcMotor.class, "slide_drive");
 
         LFDrive.setDirection(DcMotor.Direction.FORWARD);
         RFDrive.setDirection(DcMotor.Direction.REVERSE);
