@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -17,13 +16,15 @@ public class RobotHardware {
 
     public Servo ClawCenter;
     public Servo ClawLeft;
+    public double fakeUnit = 5/20; // 20 is arbitrary
+    // the succses of this implementation depends on the accuracy of the forward and starfe methods working correctley
     // public Servo ClawRight;
 
     public DcMotor Slide;
 
     public void init(HardwareMap myHmap){
         hmap = myHmap;
-        LFDrive = hmap.get(DcMotor.class, "left_front_drive"); //[TODO] rename these
+        LFDrive = hmap.get(DcMotor.class, "left_front_drive");
         RFDrive = hmap.get(DcMotor.class, "right_front_drive");
         LBDrive = hmap.get(DcMotor.class, "left_back_drive");
         RBDrive = hmap.get(DcMotor.class, "right_back_drive");
@@ -43,7 +44,6 @@ public class RobotHardware {
 
     public void autoinit(HardwareMap myHmap){
 
-
         LFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -61,3 +61,4 @@ public class RobotHardware {
     }
 
 }
+
