@@ -18,7 +18,7 @@ public class R1 extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
-    static final double DRIVE_SPEED = 0.5;
+    static final double DRIVE_SPEED = 0.75;
     static final double PRECISION_DRIVE_SPEED = 0.05;
     static final double TURN_SPEED = 0.5;
 
@@ -44,15 +44,12 @@ public class R1 extends LinearOpMode {
 
         //-------------------------------------------------//
         sleep(1000);
-        forward(DRIVE_SPEED, -23, 0.23);
+        // forward(DRIVE_SPEED, -12, 0.05);
+        robot.Carousel.setPower(0.5);
         sleep(1000);
-        strafe(DRIVE_SPEED, 25, 0.6);
-        sleep(1000);
-        robot.Carousel.setPower(0.1);
-        forward(DRIVE_SPEED, 25, 0.2);
-        sleep(1000);
+        strafe(DRIVE_SPEED, 23, 5.5);
+        sleep(5000);
         robot.Carousel.setPower(0);
-        sleep(1000);
         // duck(5);
         //-------------------------------------------------//
 

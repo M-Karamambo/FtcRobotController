@@ -36,12 +36,18 @@ public class BasicOpMode extends LinearOpMode {
                 // check for controller inputs
                 double drive = gamepad1.left_stick_y;
                 double strafe = gamepad1.left_stick_x;
+                double claw = gamepad1.right_stick_y;
                 double turn  =  -gamepad1.right_stick_x;
 
                 // process inputs
-                leftPower = Range.clip(drive + turn, -1.0, 1.0) ;
+                servoSideAngle = Range.clip(claw, -0.5, 0.5) + 0.5;
+                if (Math.abs(0.5 - servoSideAngle) > 0.25) {
+                    turn = 0; // Ignore turning if moving claw up or down
+                }
+
+                leftPower = Range.clip(drive + turn, -1.0, 1.0);
                 strafePower = Range.clip(strafe, -1.0, 1.0);
-                rightPower = Range.clip(drive - turn, -1.0, 1.0) ;
+                rightPower = Range.clip(drive - turn, -1.0, 1.0);
                 if (gamepad1.right_bumper) multiplier = 0.5;
                 // slowly increase motor speed to not send ducks flying
                 if (gamepad1.b || gamepad1.y) {
@@ -51,21 +57,12 @@ public class BasicOpMode extends LinearOpMode {
                     carouselPower = 0;
                 }
 
-                if (servoSideAngle < 1 && gamepad2.right_bumper) {
-                    servoSideAngle += 0.0005;
-                }
-                if (servoSideAngle > 0 && gamepad2.left_bumper) {
-                    servoSideAngle -= 0.0005;
-                }
-
-                if (servoCenterAngle < 1 && gamepad2.right_trigger > 0) {
+                if (gamepad1.a && servoCenterAngle < 1) {
                     servoCenterAngle += 0.0005;
                 }
-                if (servoCenterAngle > 0 && gamepad2.left_trigger > 0) {
+                if (gamepad1.x && servoCenterAngle > 0) {
                     servoCenterAngle -= 0.0005;
                 }
-
-
 
                 // set power
                 robot.LFDrive.setPower((leftPower - strafePower)*multiplier);
@@ -78,7 +75,7 @@ public class BasicOpMode extends LinearOpMode {
                 if(gamepad1.y) {
                     robot.Carousel.setDirection(DcMotor.Direction.REVERSE);
                 }
-                robot.Carousel.setPower(((gamepad1.b || gamepad1.y) ? carouselPower : 0)*multiplier);
+                robot.Carousel.setPower(((gamepad2.b || gamepad2.y) ? carouselPower : 0)*multiplier);
                 robot.ClawCenter.setPosition(servoCenterAngle);
                 robot.ClawLeft.setPosition(servoSideAngle);
                 // robot.ClawRight.setPosition(1 - servoSideAngle);
