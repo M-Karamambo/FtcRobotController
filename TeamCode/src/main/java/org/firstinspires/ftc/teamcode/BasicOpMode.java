@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -24,6 +25,7 @@ public class BasicOpMode extends LinearOpMode {
             double leftPower;
             double rightPower;
             double strafePower;
+            double slidePower = 0;
             double carouselPower = 0.1;
             double servoCenterAngle = 1;
             double servoSideAngle = 1;
@@ -64,6 +66,13 @@ public class BasicOpMode extends LinearOpMode {
                     servoCenterAngle -= 0.0005;
                 }
 
+                if (gamepad1.dpad_up) {
+                    slidePower = 0.25;
+                }
+                if (gamepad1.dpad_down) {
+                    slidePower = -0.25;
+                }
+
                 // set power
                 robot.LFDrive.setPower((leftPower - strafePower)*multiplier);
                 robot.RFDrive.setPower((rightPower + strafePower)*multiplier);
@@ -79,6 +88,7 @@ public class BasicOpMode extends LinearOpMode {
                 robot.ClawCenter.setPosition(servoCenterAngle);
                 robot.ClawLeft.setPosition(servoSideAngle);
                 // robot.ClawRight.setPosition(1 - servoSideAngle);
+                robot.Slide.setPower(slidePower*multiplier);
 
                 // Show the elapsed game time and wheel power. Telemetry
                 telemetry.addData("Status", "Run Time: " + runtime.toString());

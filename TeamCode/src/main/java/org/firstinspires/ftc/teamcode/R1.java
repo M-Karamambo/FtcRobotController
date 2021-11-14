@@ -48,7 +48,7 @@ public class R1 extends LinearOpMode {
         robot.Carousel.setPower(0.5);
         sleep(1000);
         strafe(DRIVE_SPEED, 23, 5.5);
-        sleep(5000);
+        // sleep(5000);
         robot.Carousel.setPower(0);
         // duck(5);
         //-------------------------------------------------//

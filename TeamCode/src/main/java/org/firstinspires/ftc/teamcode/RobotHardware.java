@@ -32,12 +32,13 @@ public class RobotHardware {
         ClawCenter = hmap.get(Servo.class, "claw_center");
         ClawLeft = hmap.get(Servo.class, "claw_left");
         // ClawRight = hmap.get(Servo.class, "claw_right");
-        // Slide = hmap.get(DcMotor.class, "slide_drive");
+        Slide = hmap.get(DcMotor.class, "slide_motor");
 
         LFDrive.setDirection(DcMotor.Direction.FORWARD);
         RFDrive.setDirection(DcMotor.Direction.REVERSE);
         LBDrive.setDirection(DcMotor.Direction.FORWARD);
         RBDrive.setDirection(DcMotor.Direction.REVERSE);
+        Slide.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public void autoinit(HardwareMap myHmap){
