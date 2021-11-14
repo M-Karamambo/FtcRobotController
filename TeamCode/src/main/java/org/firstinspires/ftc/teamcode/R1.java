@@ -44,13 +44,12 @@ public class R1 extends LinearOpMode {
 
         //-------------------------------------------------//
         sleep(1000);
-        // forward(DRIVE_SPEED, -12, 0.05);
-        robot.Carousel.setPower(0.5);
+        forward(DRIVE_SPEED, -robot.fakeUnit*4, 0.05);
         sleep(1000);
-        strafe(DRIVE_SPEED, 23, 5.5);
-        // sleep(5000);
-        robot.Carousel.setPower(0);
-        // duck(5);
+        strafe(DRIVE_SPEED, robot.fakeUnit*24, 5.5);
+        sleep(1000);
+        forward(DRIVE_SPEED, robot.fakeUnit*2, 5);
+         duck(5);
         //-------------------------------------------------//
 
         telemetry.addData("Path", "Complete");
