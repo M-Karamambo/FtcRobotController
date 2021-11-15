@@ -32,7 +32,7 @@ public class R1 extends LinearOpMode {
 
         robot.autoinit(hardwareMap);
 
-//        // Send telemetry message to indicate successful Encoder reset
+        // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
                 robot.LFDrive.getCurrentPosition(),
                 robot.RFDrive.getCurrentPosition(),

@@ -17,12 +17,14 @@ public class RobotHardware {
 
     public Servo ClawCenter;
     public Servo ClawLeft;
-    // public Servo ClawRight;
+    public Servo ClawRight;
+    // public Servo TestServo;
 
     public DcMotor Slide;
 
     public void init(HardwareMap myHmap){
         hmap = myHmap;
+
         LFDrive = hmap.get(DcMotor.class, "left_front_drive"); //[TODO] rename these
         RFDrive = hmap.get(DcMotor.class, "right_front_drive");
         LBDrive = hmap.get(DcMotor.class, "left_back_drive");
@@ -31,18 +33,24 @@ public class RobotHardware {
 
         ClawCenter = hmap.get(Servo.class, "claw_center");
         ClawLeft = hmap.get(Servo.class, "claw_left");
-        // ClawRight = hmap.get(Servo.class, "claw_right");
+        ClawRight = hmap.get(Servo.class, "claw_right");
+        // TestServo = hmap.get(Servo.class, "test_servo");
         Slide = hmap.get(DcMotor.class, "slide_motor");
 
         LFDrive.setDirection(DcMotor.Direction.FORWARD);
         RFDrive.setDirection(DcMotor.Direction.REVERSE);
         LBDrive.setDirection(DcMotor.Direction.FORWARD);
         RBDrive.setDirection(DcMotor.Direction.REVERSE);
+        ClawCenter.setPosition(0.0);
+        ClawLeft.setPosition(0.0);
+        // ClawRight.setPosition(1);
+        // TestServo.setPosition(0.0);
         Slide.setDirection(DcMotor.Direction.REVERSE);
     }
 
-    public void autoinit(HardwareMap myHmap){
 
+    public void autoinit(HardwareMap myHmap){
+        hmap = myHmap;
 
         LFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -59,5 +67,6 @@ public class RobotHardware {
         LBDrive.setDirection(DcMotor.Direction.FORWARD);
         RBDrive.setDirection(DcMotor.Direction.REVERSE);
     }
+
 
 }
