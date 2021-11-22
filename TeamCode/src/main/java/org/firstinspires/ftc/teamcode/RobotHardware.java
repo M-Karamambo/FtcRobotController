@@ -1,5 +1,4 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -48,7 +47,6 @@ public class RobotHardware {
         Slide.setDirection(DcMotor.Direction.REVERSE);
     }
 
-
     public void autoinit(HardwareMap myHmap){
         hmap = myHmap;
 
@@ -67,6 +65,5 @@ public class RobotHardware {
         LBDrive.setDirection(DcMotor.Direction.FORWARD);
         RBDrive.setDirection(DcMotor.Direction.REVERSE);
     }
-
-
 }
+
