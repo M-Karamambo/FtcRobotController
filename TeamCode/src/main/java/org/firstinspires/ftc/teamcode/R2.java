@@ -44,11 +44,11 @@ public class R2 extends LinearOpMode {
 
         //-------------------------------------------------//
         sleep(1000);
-        forward(DRIVE_SPEED, -robot.fakeUnit*4, 0.05);
+        forward(DRIVE_SPEED, 1, 0.05);
         sleep(1000);
-        strafe(DRIVE_SPEED, robot.fakeUnit*78, 16.5);
+        strafe(DRIVE_SPEED, 19.5, 16.5);
         sleep(1000);
-        forward(DRIVE_SPEED, robot.fakeUnit*2, 5);
+        forward(DRIVE_SPEED, 0.5, 5);
         duck(5);
         //-------------------------------------------------//
 

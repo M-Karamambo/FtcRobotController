@@ -27,9 +27,16 @@ public class TestOpMode extends LinearOpMode {
         double strafePower;
         double slidePower = 0;
         double carouselPower = 0.1;
-        double servoCenterAngle = 0.0;
-        double servoSideAngle = 0.0;
-        double testAngle = 0.0;
+
+        int clawCenterIdx = 0;
+        double[] clawCenterPos = new double[]{0.0, 1.0};
+        boolean aPressed = false;
+        int clawSideIdx = 0;
+        double[] clawSidePos = new double[]{0.0, 0.5};
+        boolean xPressed = false;
+
+        int slideIdx = 0;
+        double[] slidePos = new double[]{0.0, 0.5, 1.0};
 
         while (opModeIsActive()) {
 
@@ -53,8 +60,11 @@ public class TestOpMode extends LinearOpMode {
             rightPower = Range.clip(drive - turn, -1.0, 1.0);
             leftPower = Range.clip(drive + turn, -1.0, 1.0);
             strafePower = Range.clip(strafe, -1.0, 1.0);
-            if (gamepad1.right_bumper) multiplier = 0.5;
-            // slowly increase motor speed to not send ducks flying
+
+            if (gamepad1.right_bumper) {
+                multiplier = 0.5;
+            }
+
             if (gamepad1.b || gamepad1.y) {
                 carouselPower += 0.0025;
             }
@@ -62,37 +72,47 @@ public class TestOpMode extends LinearOpMode {
                 carouselPower = 0;
             }
 
-            if (servoSideAngle <= 1.0 && gamepad1.a) {
-                servoSideAngle += 0.001;
+            if (!aPressed && gamepad1.a) {
+                if (clawCenterIdx == 0) {
+                    clawCenterIdx = 1;
+                }
+                else if (clawCenterIdx == 1) {
+                    clawCenterIdx = 0;
+                }
+                /*switch(clawCenterIdx) {
+                    case 0:
+                        clawCenterIdx = 1;
+                        break;
+                    case 1:
+                        clawCenterIdx = 0;
+                        break;
+                }*/
             }
-            if (servoSideAngle >= 0.0 && gamepad1.x) {
-                servoSideAngle -= 0.001;
-            }
+            aPressed = gamepad1.a;
 
-            if (servoCenterAngle <= 1.0 && gamepad1.right_trigger > 0) {
-                servoCenterAngle += 0.001;
+            if (!xPressed && gamepad1.x) {
+                if (clawSideIdx == 0) {
+                    clawSideIdx = 1;
+                }
+                else if (clawSideIdx == 1) {
+                    clawSideIdx = 0;
+                }
+                /*switch(clawSideIdx) {
+                    case 0:
+                        clawSideIdx = 1;
+                        break;
+                    case 1:
+                        clawSideIdx = 0;
+                        break;
+                }*/
             }
-            if (servoCenterAngle >= 0.0 && gamepad1.left_trigger > 0) {
-                servoCenterAngle -= 0.001;
-            }
+            xPressed = gamepad1.x;
 
-            /*
-            if (gamepad1.right_trigger > 0) {
-                testAngle += 0.001;
+            if (gamepad1.dpad_up && slideIdx <= 2) {
+                slideIdx++;
             }
-            if (gamepad1.left_trigger > 0) {
-                testAngle -= 0.001;
-            }
-            */
-
-            // servoCenterAngle = gamepad1.right_trigger;
-            // servoCenterAngle = 0.5;
-
-            if (gamepad1.dpad_up) {
-                slidePower = 0.25;
-            }
-            if (gamepad1.dpad_down) {
-                slidePower = -0.25;
+            if (gamepad1.dpad_down && slideIdx >= 0) {
+                slideIdx--;
             }
 
             // set power
@@ -106,18 +126,18 @@ public class TestOpMode extends LinearOpMode {
             if(gamepad1.y) {
                 robot.Carousel.setDirection(DcMotor.Direction.REVERSE);
             }
-            robot.Carousel.setPower(((gamepad1.b || gamepad1.y) ? carouselPower : 0)*multiplier);
-            robot.ClawCenter.setPosition(servoCenterAngle);
-            robot.ClawLeft.setPosition(servoSideAngle);
-            // robot.ClawRight.setPosition(1 - servoSideAngle);
-            // robot.TestServo.setPosition(testAngle);
-            robot.Slide.setPower(slidePower*multiplier);
+            robot.Carousel.setPower(((gamepad1.b || gamepad1.y) ? carouselPower : 0) * multiplier);
+
+            robot.ClawCenter.setPosition(clawCenterPos[clawCenterIdx]);
+            robot.ClawLeft.setPosition(clawSidePos[clawSideIdx]);
+            // robot.ClawRight.setPosition(1 - clawSidePos[clawSideIdx]);
 
             // Show the elapsed game time and wheel power. Telemetry
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Test angle", "%.2f", testAngle);
-            telemetry.addData("Claw center", "%.2f", servoCenterAngle);
-            telemetry.addData("Claw center", "%.2f", servoSideAngle);
+            telemetry.addData("Claw center", "aPressed (%b), a (%b), centerIdx (%d), setPosition (%f)",
+                    aPressed, gamepad1.a, clawCenterIdx, clawCenterPos[clawCenterIdx]);
+            telemetry.addData("Claw side", "xPressed (%b), x (%b), sideIdx (%d), setPosition (%f)",
+                    xPressed, gamepad1.x, clawSideIdx, clawSidePos[clawSideIdx]);
             telemetry.update();
         }
     }
