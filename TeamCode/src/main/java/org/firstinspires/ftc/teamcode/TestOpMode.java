@@ -141,4 +141,42 @@ public class TestOpMode extends LinearOpMode {
             telemetry.update();
         }
     }
+
+    public void runSlides(RobotHardware robot, double speed, double inches, double timeoutS) {
+
+        final ElapsedTime runtime = new ElapsedTime();
+
+        final double COUNTS_PER_MOTOR_REV = 103.8; // 28 PPR at encoder shaft, 103.8 PPR at gearbox output shaft
+        final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
+        final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
+        final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+                (WHEEL_DIAMETER_INCHES * Math.PI);
+        final double DRIVE_SPEED = 0.5;
+        final double TURN_SPEED = 0.05;
+
+        int SlideTarget;
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            SlideTarget = robot.Slide.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
+
+            robot.Slide.setTargetPosition(SlideTarget);
+            runtime.reset();
+            robot.Slide.setPower(Math.abs(speed));
+            robot.Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (robot.Slide.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1", "Running to %7d :%7d", SlideTarget);
+                telemetry.addData("Path2", "Running at %7d :%7d", robot.Slide.getCurrentPosition());
+                telemetry.update();
+            }
+
+            robot.Slide.setPower(0);
+        }
+    }
 }
