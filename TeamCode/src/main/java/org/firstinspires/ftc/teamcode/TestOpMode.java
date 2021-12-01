@@ -29,7 +29,7 @@ public class TestOpMode extends LinearOpMode {
         double carouselPower = 0.1;
 
         int clawCenterIdx = 0;
-        double[] clawCenterPos = new double[]{0.0, 1.0};
+        double[] clawCenterPos = new double[]{0.0, 0.15};
         boolean aPressed = false;
         int clawSideIdx = 0;
         double[] clawSidePos = new double[]{0.0, 0.5};
@@ -108,10 +108,10 @@ public class TestOpMode extends LinearOpMode {
             }
             xPressed = gamepad1.x;
 
-            if (gamepad1.dpad_up && slideIdx <= 2) {
+            if (gamepad1.dpad_up && slideIdx < 2) {
                 slideIdx++;
             }
-            if (gamepad1.dpad_down && slideIdx >= 0) {
+            if (gamepad1.dpad_down && slideIdx > 0) {
                 slideIdx--;
             }
 
@@ -132,6 +132,8 @@ public class TestOpMode extends LinearOpMode {
             robot.ClawLeft.setPosition(clawSidePos[clawSideIdx]);
             // robot.ClawRight.setPosition(1 - clawSidePos[clawSideIdx]);
 
+            runSlides(robot, 0.5, slidePos[slideIdx], 1);
+
             // Show the elapsed game time and wheel power. Telemetry
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Claw center", "aPressed (%b), a (%b), centerIdx (%d), setPosition (%f)",
@@ -147,12 +149,10 @@ public class TestOpMode extends LinearOpMode {
         final ElapsedTime runtime = new ElapsedTime();
 
         final double COUNTS_PER_MOTOR_REV = 103.8; // 28 PPR at encoder shaft, 103.8 PPR at gearbox output shaft
-        final double DRIVE_GEAR_REDUCTION = 1.0;     // This is < 1.0 if geared UP
-        final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
+        final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
+        final double WHEEL_DIAMETER_INCHES = 1.0;     // For figuring circumference
         final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                 (WHEEL_DIAMETER_INCHES * Math.PI);
-        final double DRIVE_SPEED = 0.5;
-        final double TURN_SPEED = 0.05;
 
         int SlideTarget;
 
