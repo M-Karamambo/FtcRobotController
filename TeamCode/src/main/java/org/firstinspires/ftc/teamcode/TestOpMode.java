@@ -31,12 +31,17 @@ public class TestOpMode extends LinearOpMode {
         int clawCenterIdx = 0;
         double[] clawCenterPos = new double[]{0.0, 0.15};
         boolean aPressed = false;
+
         int clawSideIdx = 0;
         double[] clawSidePos = new double[]{0.0, 0.5};
         boolean xPressed = false;
 
+        int powerIdx = 1;
         int slideIdx = 0;
+        double[] slidePow = new double[]{-1.0, 0.0, 1.0};
         double[] slidePos = new double[]{0.0, 0.5, 1.0};
+        boolean upPressed = false;
+        boolean downPressed = false;
 
         while (opModeIsActive()) {
 
@@ -48,14 +53,6 @@ public class TestOpMode extends LinearOpMode {
             double strafe = gamepad1.left_stick_x;
             // double claw = gamepad1.right_stick_y;
             double turn  =  -gamepad1.right_stick_x;
-
-            // process inputs
-            /*
-            servoSideAngle = Range.clip(claw, -1.0, 1.0) * 0.5 + 0.5; // Shrink and offset range for servo
-            if (Math.abs(0.5 - servoSideAngle) > 0.25) {
-                turn = 0; // Ignore turning if moving claw up or down
-            }
-            */
 
             rightPower = Range.clip(drive - turn, -1.0, 1.0);
             leftPower = Range.clip(drive + turn, -1.0, 1.0);
@@ -79,14 +76,6 @@ public class TestOpMode extends LinearOpMode {
                 else if (clawCenterIdx == 1) {
                     clawCenterIdx = 0;
                 }
-                /*switch(clawCenterIdx) {
-                    case 0:
-                        clawCenterIdx = 1;
-                        break;
-                    case 1:
-                        clawCenterIdx = 0;
-                        break;
-                }*/
             }
             aPressed = gamepad1.a;
 
@@ -97,23 +86,28 @@ public class TestOpMode extends LinearOpMode {
                 else if (clawSideIdx == 1) {
                     clawSideIdx = 0;
                 }
-                /*switch(clawSideIdx) {
-                    case 0:
-                        clawSideIdx = 1;
-                        break;
-                    case 1:
-                        clawSideIdx = 0;
-                        break;
-                }*/
             }
             xPressed = gamepad1.x;
 
-            if (gamepad1.dpad_up && slideIdx < 2) {
+            if (!upPressed && gamepad1.dpad_up && powerIdx < 2) {
+                powerIdx++;
+            }
+            upPressed = gamepad1.dpad_up;
+
+            if (!downPressed && gamepad1.dpad_down && powerIdx > 0) {
+                powerIdx--;
+            }
+            downPressed = gamepad1.dpad_down;
+
+            /*if (!upPressed && gamepad1.dpad_up && slideIdx < 2) {
                 slideIdx++;
             }
-            if (gamepad1.dpad_down && slideIdx > 0) {
+            upPressed = gamepad1.dpad_up;
+
+            if (!downPressed && gamepad1.dpad_down && slideIdx > 0) {
                 slideIdx--;
             }
+            downPressed = gamepad1.dpad_down;*/
 
             // set power
             robot.LFDrive.setPower((leftPower - strafePower)*multiplier);
@@ -132,7 +126,8 @@ public class TestOpMode extends LinearOpMode {
             robot.ClawLeft.setPosition(clawSidePos[clawSideIdx]);
             // robot.ClawRight.setPosition(1 - clawSidePos[clawSideIdx]);
 
-            runSlides(robot, 0.5, slidePos[slideIdx], 1);
+            robot.Slide.setPower(slidePow[powerIdx]);
+            // runSlides(robot, 0.5, slidePos[slideIdx], 1);
 
             // Show the elapsed game time and wheel power. Telemetry
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -140,6 +135,8 @@ public class TestOpMode extends LinearOpMode {
                     aPressed, gamepad1.a, clawCenterIdx, clawCenterPos[clawCenterIdx]);
             telemetry.addData("Claw side", "xPressed (%b), x (%b), sideIdx (%d), setPosition (%f)",
                     xPressed, gamepad1.x, clawSideIdx, clawSidePos[clawSideIdx]);
+            telemetry.addData("Slide motor", "powerIdx (%d), power (%f), position (%7d)",
+                    powerIdx, slidePow[powerIdx], robot.Slide.getCurrentPosition());
             telemetry.update();
         }
     }
