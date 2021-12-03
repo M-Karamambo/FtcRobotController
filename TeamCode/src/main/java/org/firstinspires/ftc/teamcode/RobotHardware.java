@@ -44,7 +44,7 @@ public class RobotHardware {
         ClawLeft.setPosition(0.0);
         // ClawRight.setPosition(1);
         // TestServo.setPosition(0.0);
-        Slide.setDirection(DcMotor.Direction.REVERSE);
+        Slide.setDirection(DcMotor.Direction.FORWARD);
     }
 
     public void autoinit(HardwareMap myHmap){
