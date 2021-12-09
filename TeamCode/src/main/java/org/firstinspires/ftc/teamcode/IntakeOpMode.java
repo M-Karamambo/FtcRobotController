@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Slide Encoder OpMode", group="Linear Opmode")
-public class SlideEncoderOpMode extends LinearOpMode {
+@TeleOp(name="Intake OpMode", group="Linear Opmode")
+public class IntakeOpMode extends LinearOpMode {
     // initialize telemetry
     private final ElapsedTime runtime = new ElapsedTime();
 
@@ -42,6 +42,10 @@ public class SlideEncoderOpMode extends LinearOpMode {
         boolean upPressed = false;
         boolean downPressed = false;
 
+        double intakePower = 0;
+        boolean LTPressed = false;
+        boolean RTPressed = false;
+
         while (opModeIsActive()) {
 
             // multiplier for slow mode
@@ -57,6 +61,8 @@ public class SlideEncoderOpMode extends LinearOpMode {
             leftPower = Range.clip(drive + turn, -1.0, 1.0);
             strafePower = Range.clip(strafe, -1.0, 1.0);
 
+            //--------------------------------------------------------------------------------------
+
             if (gamepad1.right_bumper) {
                 multiplier = 0.5;
             }
@@ -68,15 +74,29 @@ public class SlideEncoderOpMode extends LinearOpMode {
                 carouselPower = 0;
             }
 
-            if (!aPressed && gamepad1.a) {
-                if (clawCenterIdx == 0) {
-                    clawCenterIdx = 1;
+            //--------------------------------------------------------------------------------------
+
+            if(!LTPressed && gamepad1.left_trigger > 0) {
+                if (intakePower == 0) {
+                    intakePower = 1;
                 }
-                else if (clawCenterIdx == 1) {
-                    clawCenterIdx = 0;
+                else if (intakePower == 1) {
+                    intakePower = 0;
                 }
             }
-            aPressed = gamepad1.a;
+            LTPressed = gamepad1.left_trigger > 0;
+
+            if(!RTPressed && gamepad1.right_trigger > 0) {
+                if (intakePower == 0) {
+                    intakePower = -1;
+                }
+                else if (intakePower == -1) {
+                    intakePower = 0;
+                }
+            }
+            RTPressed = gamepad1.right_trigger > 0;
+
+            //--------------------------------------------------------------------------------------
 
             if (!xPressed && gamepad1.x) {
                 if (clawSideIdx == 0) {
@@ -88,6 +108,8 @@ public class SlideEncoderOpMode extends LinearOpMode {
             }
             xPressed = gamepad1.x;
 
+            //--------------------------------------------------------------------------------------
+
             if (!upPressed && gamepad1.dpad_up && slideIdx < 2) {
                 slideIdx++;
             }
@@ -97,6 +119,8 @@ public class SlideEncoderOpMode extends LinearOpMode {
                 slideIdx--;
             }
             downPressed = gamepad1.dpad_down;
+
+            //--------------------------------------------------------------------------------------
 
             // set power
             robot.LFDrive.setPower((leftPower - strafePower)*multiplier);
@@ -116,6 +140,7 @@ public class SlideEncoderOpMode extends LinearOpMode {
             // robot.ClawRight.setPosition(1 - clawSidePos[clawSideIdx]);
 
             runSlides(robot, 1, slidePos[slideIdx], 1);
+            robot.Intake.setPower(intakePower);
 
             // Show the elapsed game time and wheel power. Telemetry
             telemetry.addData("Status", "Run Time: " + runtime.toString());

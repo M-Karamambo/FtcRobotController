@@ -99,16 +99,6 @@ public class TestOpMode extends LinearOpMode {
             }
             downPressed = gamepad1.dpad_down;
 
-            /*if (!upPressed && gamepad1.dpad_up && slideIdx < 2) {
-                slideIdx++;
-            }
-            upPressed = gamepad1.dpad_up;
-
-            if (!downPressed && gamepad1.dpad_down && slideIdx > 0) {
-                slideIdx--;
-            }
-            downPressed = gamepad1.dpad_down;*/
-
             // set power
             robot.LFDrive.setPower((leftPower - strafePower)*multiplier);
             robot.RFDrive.setPower((rightPower + strafePower)*multiplier);
