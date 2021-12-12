@@ -26,13 +26,14 @@ public class IntakeOpMode extends LinearOpMode {
         double strafePower;
         double slidePower = 0;
         double carouselPower = 0.1;
+        double intakePower;
 
         int clawCenterIdx = 0;
         double[] clawCenterPos = new double[]{0.0, 0.15};
         boolean aPressed = false;
 
         int clawSideIdx = 0;
-        double[] clawSidePos = new double[]{0.0, 0.5};
+        double[] clawSidePos = new double[]{0.125, 0.35};
         boolean xPressed = false;
 
         int powerIdx = 1;
@@ -41,10 +42,6 @@ public class IntakeOpMode extends LinearOpMode {
         double[] slidePos = new double[]{0.0, 15.0, 30.0};
         boolean upPressed = false;
         boolean downPressed = false;
-
-        double intakePower = 0;
-        boolean LTPressed = false;
-        boolean RTPressed = false;
 
         while (opModeIsActive()) {
 
@@ -60,6 +57,7 @@ public class IntakeOpMode extends LinearOpMode {
             rightPower = Range.clip(drive - turn, -1.0, 1.0);
             leftPower = Range.clip(drive + turn, -1.0, 1.0);
             strafePower = Range.clip(strafe, -1.0, 1.0);
+            intakePower = 0;
 
             //--------------------------------------------------------------------------------------
 
@@ -68,7 +66,7 @@ public class IntakeOpMode extends LinearOpMode {
             }
 
             if (gamepad1.b || gamepad1.y) {
-                carouselPower += 0.0025;
+                carouselPower += 0.0035;
             }
             else {
                 carouselPower = 0;
@@ -76,25 +74,13 @@ public class IntakeOpMode extends LinearOpMode {
 
             //--------------------------------------------------------------------------------------
 
-            if(!LTPressed && gamepad1.left_trigger > 0) {
-                if (intakePower == 0) {
-                    intakePower = 1;
-                }
-                else if (intakePower == 1) {
-                    intakePower = 0;
-                }
+            if(gamepad1.left_trigger > 0) {
+                intakePower = 1;
             }
-            LTPressed = gamepad1.left_trigger > 0;
 
-            if(!RTPressed && gamepad1.right_trigger > 0) {
-                if (intakePower == 0) {
-                    intakePower = -1;
-                }
-                else if (intakePower == -1) {
-                    intakePower = 0;
-                }
+            if(gamepad1.right_trigger > 0) {
+                intakePower = -0.5;
             }
-            RTPressed = gamepad1.right_trigger > 0;
 
             //--------------------------------------------------------------------------------------
 
@@ -144,8 +130,8 @@ public class IntakeOpMode extends LinearOpMode {
 
             // Show the elapsed game time and wheel power. Telemetry
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Claw center", "aPressed (%b), a (%b), centerIdx (%d), setPosition (%f)",
-                    aPressed, gamepad1.a, clawCenterIdx, clawCenterPos[clawCenterIdx]);
+            telemetry.addData("Intake motor", "Left trigger (%f), right trigger (%f)",
+                    gamepad1.left_trigger, gamepad1.right_trigger);
             telemetry.addData("Claw side", "xPressed (%b), x (%b), sideIdx (%d), setPosition (%f)",
                     xPressed, gamepad1.x, clawSideIdx, clawSidePos[clawSideIdx]);
             telemetry.addData("Slide motor", "powerIdx (%d), power (%f), position (%7d)",
@@ -160,28 +146,28 @@ public class IntakeOpMode extends LinearOpMode {
 
         final double COUNTS_PER_MOTOR_REV = 103.8; // 28 PPR at encoder shaft, 103.8 PPR at gearbox output shaft
         final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
-        final double WHEEL_DIAMETER_INCHES = 1.0;     // For figuring circumference
+        final double WHEEL_DIAMETER_INCHES = 1;     // For figuring circumference
         final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                 (WHEEL_DIAMETER_INCHES * Math.PI);
 
-        int SlideTarget;
+        int slideTarget;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            SlideTarget = /*robot.Slide.getCurrentPosition() + */(int) (inches * COUNTS_PER_INCH);
+            slideTarget = /*robot.Slide.getCurrentPosition() + */(int) (inches * COUNTS_PER_INCH);
 
-            robot.Slide.setTargetPosition(SlideTarget);
+            robot.Slide.setTargetPosition(slideTarget);
             runtime.reset();
             robot.Slide.setPower(Math.abs(speed));
             robot.Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (robot.Slide.isBusy())) {
+                    (Math.abs(slideTarget - robot.Slide.getCurrentPosition()) > 10)) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1", "Running to %7d", SlideTarget);
+                telemetry.addData("Path1", "Running to %7d", slideTarget);
                 telemetry.addData("Path2", "Running at %7d", robot.Slide.getCurrentPosition());
                 telemetry.update();
             }

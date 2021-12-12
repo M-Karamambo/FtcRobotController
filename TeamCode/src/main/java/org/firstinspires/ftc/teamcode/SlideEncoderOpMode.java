@@ -28,7 +28,7 @@ public class SlideEncoderOpMode extends LinearOpMode {
         double carouselPower = 0.1;
 
         int clawCenterIdx = 0;
-        double[] clawCenterPos = new double[]{0.0, 0.15};
+        double[] clawCenterPos = new double[]{0.05, 0.15};
         boolean aPressed = false;
 
         int clawSideIdx = 0;
@@ -115,7 +115,7 @@ public class SlideEncoderOpMode extends LinearOpMode {
             robot.ClawLeft.setPosition(clawSidePos[clawSideIdx]);
             // robot.ClawRight.setPosition(1 - clawSidePos[clawSideIdx]);
 
-            runSlides(robot, 1, slidePos[slideIdx], 1);
+            runSlides(robot, 1, slidePos[slideIdx], 0.75);
 
             // Show the elapsed game time and wheel power. Telemetry
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -135,7 +135,7 @@ public class SlideEncoderOpMode extends LinearOpMode {
 
         final double COUNTS_PER_MOTOR_REV = 103.8; // 28 PPR at encoder shaft, 103.8 PPR at gearbox output shaft
         final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
-        final double WHEEL_DIAMETER_INCHES = 1.0;     // For figuring circumference
+        final double WHEEL_DIAMETER_INCHES = 1;     // For figuring circumference
         final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                 (WHEEL_DIAMETER_INCHES * Math.PI);
 

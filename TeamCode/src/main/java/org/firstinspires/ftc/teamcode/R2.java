@@ -24,13 +24,11 @@ public class R2 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot.init(hardwareMap);
+        robot.autoinit(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");
         telemetry.update();
-
-        robot.autoinit(hardwareMap);
 
 //        // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
@@ -44,12 +42,10 @@ public class R2 extends LinearOpMode {
 
         //-------------------------------------------------//
         sleep(1000);
-        forward(DRIVE_SPEED, 1, 0.05);
+        strafe(DRIVE_SPEED, 23, 0.5);
         sleep(1000);
-        strafe(DRIVE_SPEED, 19.5, 16.5);
+        forward(PRECISION_DRIVE_SPEED, 23, 0.5);
         sleep(1000);
-        forward(DRIVE_SPEED, 0.5, 5);
-        duck(5);
         //-------------------------------------------------//
 
         telemetry.addData("Path", "Complete");
