@@ -51,21 +51,7 @@ public class R2 extends LinearOpMode {
         sleep(1000);
         forward(DRIVE_SPEED, -10, 1);
         sleep(1000);
-        strafe(DRIVE_SPEED, -40, 2);
 
-        sleep(1000);
-        robot.ClawSide.setPosition(0.35);
-        sleep(1000);
-        runSlides(robot, 1, (int)(30.0 * COUNTS_PER_INCH2), 1);
-        sleep(1000);
-        robot.Intake.setPower(-0.5);
-        sleep(3000);
-        robot.Intake.setPower(0);
-
-        sleep(1000);
-        strafe(DRIVE_SPEED, 6, 0.5);
-        sleep(1000);
-        forward(DRIVE_SPEED, -10, 1);
         //-------------------------------------------------//
 
         telemetry.addData("Path", "Complete");
