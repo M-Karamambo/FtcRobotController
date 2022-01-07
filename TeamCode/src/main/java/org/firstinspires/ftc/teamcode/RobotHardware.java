@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -15,7 +14,7 @@ public class RobotHardware {
     public DcMotor Carousel;
 
     public Servo ClawCenter;
-    public Servo ClawLeft;
+    public Servo ClawSide;
     public Servo ClawRight;
 
     public DcMotor Slide;
@@ -31,8 +30,7 @@ public class RobotHardware {
         Carousel = hmap.get(DcMotor.class, "carousel_spinner");
 
         ClawCenter = hmap.get(Servo.class, "claw_center");
-        ClawLeft = hmap.get(Servo.class, "claw_left");
-        ClawRight = hmap.get(Servo.class, "claw_right");
+        ClawSide = hmap.get(Servo.class, "claw_left");
 
         Slide = hmap.get(DcMotor.class, "slide_motor");
         Intake = hmap.get(DcMotor.class, "intake_motor");
@@ -43,8 +41,7 @@ public class RobotHardware {
         RBDrive.setDirection(DcMotor.Direction.REVERSE);
 
         ClawCenter.setPosition(0.0);
-        ClawLeft.setPosition(0.0);
-        // ClawRight.setPosition(1);
+        ClawSide.setPosition(0.0);
 
         Slide.setDirection(DcMotor.Direction.FORWARD);
         Intake.setDirection(DcMotor.Direction.FORWARD);
@@ -60,8 +57,7 @@ public class RobotHardware {
         Carousel = hmap.get(DcMotor.class, "carousel_spinner");
 
         ClawCenter = hmap.get(Servo.class, "claw_center");
-        ClawLeft = hmap.get(Servo.class, "claw_left");
-        ClawRight = hmap.get(Servo.class, "claw_right");
+        ClawSide = hmap.get(Servo.class, "claw_left");
 
         Slide = hmap.get(DcMotor.class, "slide_motor");
         Intake = hmap.get(DcMotor.class, "intake_motor");
@@ -72,7 +68,7 @@ public class RobotHardware {
         RBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         ClawCenter.setPosition(0.0);
-        ClawLeft.setPosition(0.0);
+        ClawSide.setPosition(0.0);
 
         /*LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);

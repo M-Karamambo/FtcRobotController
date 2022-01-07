@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -10,6 +9,12 @@ import com.qualcomm.robotcore.util.Range;
 public class IntakeOpMode extends LinearOpMode {
     // initialize telemetry
     private final ElapsedTime runtime = new ElapsedTime();
+
+    static final double COUNTS_PER_MOTOR_REV = 103.8; // 28 PPR at encoder shaft, 103.8 PPR at gearbox output shaft
+    static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES = 1;     // For figuring circumference
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * Math.PI);
 
     @Override
     public void runOpMode() {
@@ -52,7 +57,7 @@ public class IntakeOpMode extends LinearOpMode {
             double drive = gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
             // double claw = gamepad1.right_stick_y;
-            double turn  =  -gamepad1.right_stick_x;
+            double turn = -gamepad1.right_stick_x;
 
             rightPower = Range.clip(drive - turn, -1.0, 1.0);
             leftPower = Range.clip(drive + turn, -1.0, 1.0);
@@ -67,18 +72,17 @@ public class IntakeOpMode extends LinearOpMode {
 
             if (gamepad1.b || gamepad1.y) {
                 carouselPower += 0.0035;
-            }
-            else {
+            } else {
                 carouselPower = 0;
             }
 
             //--------------------------------------------------------------------------------------
 
-            if(gamepad1.left_trigger > 0) {
+            if (gamepad1.left_trigger > 0) {
                 intakePower = 1;
             }
 
-            if(gamepad1.right_trigger > 0) {
+            if (gamepad1.right_trigger > 0) {
                 intakePower = -0.5;
             }
 
@@ -87,8 +91,7 @@ public class IntakeOpMode extends LinearOpMode {
             if (!xPressed && gamepad1.x) {
                 if (clawSideIdx == 0) {
                     clawSideIdx = 1;
-                }
-                else if (clawSideIdx == 1) {
+                } else if (clawSideIdx == 1) {
                     clawSideIdx = 0;
                 }
             }
@@ -109,23 +112,27 @@ public class IntakeOpMode extends LinearOpMode {
             //--------------------------------------------------------------------------------------
 
             // set power
-            robot.LFDrive.setPower((leftPower - strafePower)*multiplier);
-            robot.RFDrive.setPower((rightPower + strafePower)*multiplier);
-            robot.LBDrive.setPower((leftPower + strafePower)*multiplier);
-            robot.RBDrive.setPower((rightPower - strafePower)*multiplier);
-            if(gamepad1.b) {
+            robot.LFDrive.setPower((leftPower - strafePower) * multiplier);
+            robot.RFDrive.setPower((rightPower + strafePower) * multiplier);
+            robot.LBDrive.setPower((leftPower + strafePower) * multiplier);
+            robot.RBDrive.setPower((rightPower - strafePower) * multiplier);
+            if (gamepad1.b) {
                 robot.Carousel.setDirection(DcMotor.Direction.FORWARD);
             }
-            if(gamepad1.y) {
+            if (gamepad1.y) {
                 robot.Carousel.setDirection(DcMotor.Direction.REVERSE);
             }
             robot.Carousel.setPower(((gamepad1.b || gamepad1.y) ? carouselPower : 0) * multiplier);
 
             robot.ClawCenter.setPosition(clawCenterPos[clawCenterIdx]);
-            robot.ClawLeft.setPosition(clawSidePos[clawSideIdx]);
+            robot.ClawSide.setPosition(clawSidePos[clawSideIdx]);
             // robot.ClawRight.setPosition(1 - clawSidePos[clawSideIdx]);
 
-            runSlides(robot, 1, slidePos[slideIdx], 1);
+            int slideTarget = (int) (slidePos[slideIdx] * COUNTS_PER_INCH);
+
+            if (Math.abs(slideTarget - robot.Slide.getCurrentPosition()) > 10) {
+                runSlides(robot, 1, slideTarget, 1);
+            }
             robot.Intake.setPower(intakePower);
 
             // Show the elapsed game time and wheel power. Telemetry
@@ -140,22 +147,10 @@ public class IntakeOpMode extends LinearOpMode {
         }
     }
 
-    public void runSlides(RobotHardware robot, double speed, double inches, double timeoutS) {
-
-        final ElapsedTime runtime = new ElapsedTime();
-
-        final double COUNTS_PER_MOTOR_REV = 103.8; // 28 PPR at encoder shaft, 103.8 PPR at gearbox output shaft
-        final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
-        final double WHEEL_DIAMETER_INCHES = 1;     // For figuring circumference
-        final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-                (WHEEL_DIAMETER_INCHES * Math.PI);
-
-        int slideTarget;
+    public void runSlides(RobotHardware robot, double speed, int slideTarget, double timeoutS) {
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
-
-            slideTarget = /*robot.Slide.getCurrentPosition() + */(int) (inches * COUNTS_PER_INCH);
 
             robot.Slide.setTargetPosition(slideTarget);
             runtime.reset();

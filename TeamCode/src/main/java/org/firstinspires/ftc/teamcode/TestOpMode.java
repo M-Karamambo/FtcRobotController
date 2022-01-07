@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -113,7 +112,7 @@ public class TestOpMode extends LinearOpMode {
             robot.Carousel.setPower(((gamepad1.b || gamepad1.y) ? carouselPower : 0) * multiplier);
 
             robot.ClawCenter.setPosition(clawCenterPos[clawCenterIdx]);
-            robot.ClawLeft.setPosition(clawSidePos[clawSideIdx]);
+            robot.ClawSide.setPosition(clawSidePos[clawSideIdx]);
             // robot.ClawRight.setPosition(1 - clawSidePos[clawSideIdx]);
 
             robot.Slide.setPower(slidePow[powerIdx]);

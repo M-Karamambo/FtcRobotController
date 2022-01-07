@@ -18,6 +18,13 @@ public class R1 extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
+
+    static final double COUNTS_PER_MOTOR_REV2 = 103.8; // 28 PPR at encoder shaft, 103.8 PPR at gearbox output shaft
+    static final double DRIVE_GEAR_REDUCTION2 = 2.0;     // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES2 = 1;     // For figuring circumference
+    static final double COUNTS_PER_INCH2 = (COUNTS_PER_MOTOR_REV2 * DRIVE_GEAR_REDUCTION2) /
+            (WHEEL_DIAMETER_INCHES2 * Math.PI);
+
     static final double DRIVE_SPEED = 0.75;
     static final double PRECISION_DRIVE_SPEED = 0.05;
     static final double TURN_SPEED = 0.5;
@@ -42,8 +49,23 @@ public class R1 extends LinearOpMode {
 
         //-------------------------------------------------//
         sleep(1000);
-        forward(PRECISION_DRIVE_SPEED, -23, 0.5);
+        forward(DRIVE_SPEED, -10, 1);
         sleep(1000);
+        strafe(DRIVE_SPEED, -40, 2);
+
+        sleep(1000);
+        robot.ClawSide.setPosition(0.35);
+        sleep(1000);
+        runSlides(robot, 1, (int)(30.0 * COUNTS_PER_INCH2), 1);
+        sleep(1000);
+        robot.Intake.setPower(-0.5);
+        sleep(3000);
+        robot.Intake.setPower(0);
+
+        sleep(1000);
+        strafe(DRIVE_SPEED, 6, 0.5);
+        sleep(1000);
+        forward(DRIVE_SPEED, -10, 1);
         //-------------------------------------------------//
 
         telemetry.addData("Path", "Complete");
@@ -136,23 +158,24 @@ public class R1 extends LinearOpMode {
 
     public void encoderDrive ( double speed, double leftInches, double rightInches, double timeoutS){
 
-        int LTarget;
-        int RTarget;
-
-        int avgLeft = (robot.LFDrive.getCurrentPosition() + robot.LBDrive.getCurrentPosition()) / 2;
-        int avgRight = (robot.RFDrive.getCurrentPosition() + robot.RBDrive.getCurrentPosition()) / 2;
+        int LFTarget;
+        int RFTarget;
+        int LBTarget;
+        int RBTarget;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            LTarget = avgLeft + (int) (leftInches * COUNTS_PER_INCH);
-            RTarget = avgRight + (int) (rightInches * COUNTS_PER_INCH);
+            LFTarget = robot.LFDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            RFTarget = robot.RFDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            LBTarget = robot.LBDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            RBTarget = robot.RBDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
 
-            robot.LFDrive.setTargetPosition(LTarget);
-            robot.RFDrive.setTargetPosition(RTarget);
-            robot.LBDrive.setTargetPosition(LTarget);
-            robot.RBDrive.setTargetPosition(RTarget);
+            robot.LFDrive.setTargetPosition(LFTarget);
+            robot.RFDrive.setTargetPosition(RFTarget);
+            robot.LBDrive.setTargetPosition(LBTarget);
+            robot.RBDrive.setTargetPosition(RBTarget);
 
 
             // reset the timeout time and start motion.
@@ -199,6 +222,30 @@ public class R1 extends LinearOpMode {
             robot.RBDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             //  sleep(250);   // optional pause after each move
+        }
+    }
+
+    public void runSlides(RobotHardware robot, double speed, int slideTarget, double timeoutS) {
+
+        // Ensure that the opmode is still active
+        if (opModeIsActive()) {
+
+            robot.Slide.setTargetPosition(slideTarget);
+            runtime.reset();
+            robot.Slide.setPower(Math.abs(speed));
+            robot.Slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (Math.abs(slideTarget - robot.Slide.getCurrentPosition()) > 10)) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1", "Running to %7d", slideTarget);
+                telemetry.addData("Path2", "Running at %7d", robot.Slide.getCurrentPosition());
+                telemetry.update();
+            }
+
+            robot.Slide.setPower(0);
         }
     }
 }
