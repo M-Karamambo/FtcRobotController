@@ -30,7 +30,7 @@ public class RobotHardware {
         Carousel = hmap.get(DcMotor.class, "carousel_spinner");
 
         ClawCenter = hmap.get(Servo.class, "claw_center");
-        ClawSide = hmap.get(Servo.class, "claw_left");
+        ClawSide = hmap.get(Servo.class, "claw_side");
 
         Slide = hmap.get(DcMotor.class, "slide_motor");
         Intake = hmap.get(DcMotor.class, "intake_motor");

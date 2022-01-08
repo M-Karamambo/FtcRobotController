@@ -38,7 +38,7 @@ public class IntakeOpMode extends LinearOpMode {
         boolean aPressed = false;
 
         int clawSideIdx = 0;
-        double[] clawSidePos = new double[]{0.125, 0.35};
+        double[] clawSidePos = new double[]{0.0, 0.35};
         boolean xPressed = false;
 
         int powerIdx = 1;
@@ -130,7 +130,7 @@ public class IntakeOpMode extends LinearOpMode {
 
             int slideTarget = (int) (slidePos[slideIdx] * COUNTS_PER_INCH);
 
-            if (Math.abs(slideTarget - robot.Slide.getCurrentPosition()) > 10) {
+            if (Math.abs(slideTarget - robot.Slide.getCurrentPosition()) > 15) {
                 runSlides(robot, 1, slideTarget, 1);
             }
             robot.Intake.setPower(intakePower);
