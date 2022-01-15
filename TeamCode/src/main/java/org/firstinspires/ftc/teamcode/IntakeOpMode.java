@@ -12,7 +12,7 @@ public class IntakeOpMode extends LinearOpMode {
 
     static final double COUNTS_PER_MOTOR_REV = 103.8; // 28 PPR at encoder shaft, 103.8 PPR at gearbox output shaft
     static final double DRIVE_GEAR_REDUCTION = 2.0;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES = 1;     // For figuring circumference
+    static final double WHEEL_DIAMETER_INCHES = 0.8425;     // For figuring circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * Math.PI);
 
@@ -38,15 +38,16 @@ public class IntakeOpMode extends LinearOpMode {
         boolean aPressed = false;
 
         int clawSideIdx = 0;
-        double[] clawSidePos = new double[]{0.0, 0.35};
+        double[] clawSidePos = new double[]{0.0, 0.30};
         boolean xPressed = false;
 
         int powerIdx = 1;
         int slideIdx = 0;
         double[] slidePow = new double[]{-1.0, 0.0, 1.0};
-        double[] slidePos = new double[]{0.0, 15.0, 30.0};
+        double[] slidePos = new double[]{0.0, -15.0, -30.0};
         boolean upPressed = false;
         boolean downPressed = false;
+        boolean shouldRun = true;
 
         while (opModeIsActive()) {
 
@@ -101,11 +102,13 @@ public class IntakeOpMode extends LinearOpMode {
 
             if (!upPressed && gamepad1.dpad_up && slideIdx < 2) {
                 slideIdx++;
+                shouldRun = true;
             }
             upPressed = gamepad1.dpad_up;
 
             if (!downPressed && gamepad1.dpad_down && slideIdx > 0) {
                 slideIdx--;
+                shouldRun = true;
             }
             downPressed = gamepad1.dpad_down;
 
@@ -130,8 +133,12 @@ public class IntakeOpMode extends LinearOpMode {
 
             int slideTarget = (int) (slidePos[slideIdx] * COUNTS_PER_INCH);
 
-            if (Math.abs(slideTarget - robot.Slide.getCurrentPosition()) > 15) {
+            if (shouldRun) {
                 runSlides(robot, 1, slideTarget, 1);
+            }
+
+            if (Math.abs(slideTarget - robot.Slide.getCurrentPosition()) < 30) {
+                shouldRun = false;
             }
             robot.Intake.setPower(intakePower);
 

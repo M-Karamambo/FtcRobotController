@@ -21,17 +21,17 @@ public class B2 extends LinearOpMode {
 
     static final double COUNTS_PER_MOTOR_REV2 = 103.8; // 28 PPR at encoder shaft, 103.8 PPR at gearbox output shaft
     static final double DRIVE_GEAR_REDUCTION2 = 2.0;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES2 = 1;     // For figuring circumference
+    static final double WHEEL_DIAMETER_INCHES2 = 0.8425;     // For figuring circumference
     static final double COUNTS_PER_INCH2 = (COUNTS_PER_MOTOR_REV2 * DRIVE_GEAR_REDUCTION2) /
             (WHEEL_DIAMETER_INCHES2 * Math.PI);
 
-    static final double DRIVE_SPEED = 0.5;
-    static final double PRECISION_DRIVE_SPEED = 0.2;
+    static final double DRIVE_SPEED = 0.75;
+    static final double PRECISION_DRIVE_SPEED = 0.5;
     static final double TURN_SPEED = 0.5;
 
     @Override
     public void runOpMode() {
-        robot.autoinit(hardwareMap);
+        robot.init(hardwareMap);
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");
@@ -49,9 +49,22 @@ public class B2 extends LinearOpMode {
 
         //-------------------------------------------------//
         sleep(1000);
-        strafe(DRIVE_SPEED, 23, 3);
+        robot.ClawSide.setPosition(0.3);
         sleep(1000);
-        forward(DRIVE_SPEED, -23, 3);
+        runSlides(robot, 1, (int)(-30.0 * COUNTS_PER_INCH2), 2);
+        sleep(1000);
+        robot.Intake.setPower(-0.3);
+        sleep(3000);
+        robot.Intake.setPower(0);
+        sleep(1000);
+        runSlides(robot, 0.5, (int)(0.0 * COUNTS_PER_INCH2), 2);
+        sleep(1000);
+        robot.ClawSide.setPosition(0.8);
+
+        sleep(1000);
+        strafe(PRECISION_DRIVE_SPEED, -10, 1);
+        sleep(1000);
+        forward(DRIVE_SPEED, -10, 0.75);
         //-------------------------------------------------//
 
         telemetry.addData("Path", "Complete");

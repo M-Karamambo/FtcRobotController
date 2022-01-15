@@ -57,28 +57,21 @@ public class RobotHardware {
         Carousel = hmap.get(DcMotor.class, "carousel_spinner");
 
         ClawCenter = hmap.get(Servo.class, "claw_center");
-        ClawSide = hmap.get(Servo.class, "claw_left");
+        ClawSide = hmap.get(Servo.class, "claw_side");
 
         Slide = hmap.get(DcMotor.class, "slide_motor");
         Intake = hmap.get(DcMotor.class, "intake_motor");
 
-        LFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RFDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        LBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        RBDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LFDrive.setDirection(DcMotor.Direction.FORWARD);
+        RFDrive.setDirection(DcMotor.Direction.REVERSE);
+        LBDrive.setDirection(DcMotor.Direction.FORWARD);
+        RBDrive.setDirection(DcMotor.Direction.REVERSE);
 
         ClawCenter.setPosition(0.0);
-        ClawSide.setPosition(0.0);
+        // ClawSide.setPosition(0.0);
 
-        /*LFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RFDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        LBDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        RBDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);*/
-
-        LFDrive.setDirection(DcMotor.Direction.REVERSE);
-        RFDrive.setDirection(DcMotor.Direction.FORWARD);
-        LBDrive.setDirection(DcMotor.Direction.REVERSE);
-        RBDrive.setDirection(DcMotor.Direction.FORWARD);
+        Slide.setDirection(DcMotor.Direction.FORWARD);
+        Intake.setDirection(DcMotor.Direction.FORWARD);
     }
 }
 
