@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.Math;
 
-@Autonomous(name="B2", group="Blue")
-public class B2 extends LinearOpMode {
+@Autonomous(name="TestAuto2", group="Testing")
+public class TestAuto2 extends LinearOpMode {
 
     /* Declare OpMode members. */
     RobotHardware robot = new RobotHardware();
@@ -37,7 +37,7 @@ public class B2 extends LinearOpMode {
         telemetry.addData("Status", "Resetting Encoders");
         telemetry.update();
 
-//        // Send telemetry message to indicate successful Encoder reset
+        // Send telemetry message to indicate successful Encoder reset
         telemetry.addData("Path0", "Starting at %7d :%7d",
                 robot.LFDrive.getCurrentPosition(),
                 robot.RFDrive.getCurrentPosition(),
@@ -48,23 +48,23 @@ public class B2 extends LinearOpMode {
         waitForStart();
 
         //-------------------------------------------------//
-        sleep(1000);
+        /*sleep(1000);
         robot.ClawSide.setPosition(0.3);
         sleep(1000);
         runSlides(robot, 1, (int)(-30.0 * COUNTS_PER_INCH2), 2);
         sleep(1000);
-        robot.Intake.setPower(-0.5);
+        robot.Intake.setPower(-0.3);
         sleep(3000);
         robot.Intake.setPower(0);
         sleep(1000);
-        runSlides(robot, 0.5, (int)(0.0 * COUNTS_PER_INCH2), 6);
+        runSlides(robot, 0.5, (int)(0.0 * COUNTS_PER_INCH2), 2);
         sleep(1000);
-        robot.ClawSide.setPosition(0.8);
+        robot.ClawSide.setPosition(0.8);*/
 
+        /*sleep(1000);
+        drive(1, 1, 30);*/
         sleep(1000);
-        strafe(1, 1);
-        sleep(1000);
-        drive(1, 1, 0.16);
+        drive(1, 1, 0.125);
         //-------------------------------------------------//
 
         telemetry.addData("Path", "Complete");
@@ -132,10 +132,10 @@ public class B2 extends LinearOpMode {
 
             // reset the timeout time and start motion.
             runtime.reset();
-            robot.LFDrive.setPower(-speed);
-            robot.RFDrive.setPower(speed);
-            robot.LBDrive.setPower(speed);
-            robot.RBDrive.setPower(-speed);
+            robot.LFDrive.setPower(speed);
+            robot.RFDrive.setPower(-speed);
+            robot.LBDrive.setPower(-speed);
+            robot.RBDrive.setPower(speed);
 
             // Turn On RUN_TO_POSITION
             /*robot.LFDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -158,23 +158,24 @@ public class B2 extends LinearOpMode {
 
     public void encoderDrive ( double speed, double leftInches, double rightInches, double timeoutS){
 
-        int LTarget;
-        int RTarget;
-
-        int avgLeft = (robot.LFDrive.getCurrentPosition() + robot.LBDrive.getCurrentPosition()) / 2;
-        int avgRight = (robot.RFDrive.getCurrentPosition() + robot.RBDrive.getCurrentPosition()) / 2;
+        int LFTarget;
+        int RFTarget;
+        int LBTarget;
+        int RBTarget;
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            LTarget = avgLeft + (int) (leftInches * COUNTS_PER_INCH);
-            RTarget = avgRight + (int) (rightInches * COUNTS_PER_INCH);
+            LFTarget = robot.LFDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            RFTarget = robot.RFDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            LBTarget = robot.LBDrive.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            RBTarget = robot.RBDrive.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
 
-            robot.LFDrive.setTargetPosition(LTarget);
-            robot.RFDrive.setTargetPosition(RTarget);
-            robot.LBDrive.setTargetPosition(LTarget);
-            robot.RBDrive.setTargetPosition(RTarget);
+            robot.LFDrive.setTargetPosition(LFTarget);
+            robot.RFDrive.setTargetPosition(RFTarget);
+            robot.LBDrive.setTargetPosition(LBTarget);
+            robot.RBDrive.setTargetPosition(RBTarget);
 
 
             // reset the timeout time and start motion.

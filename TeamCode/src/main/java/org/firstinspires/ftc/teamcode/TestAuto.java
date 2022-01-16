@@ -53,7 +53,7 @@ public class TestAuto extends LinearOpMode {
         sleep(1000);
         runSlides(robot, 1, (int)(-30.0 * COUNTS_PER_INCH2), 2);
         sleep(1000);
-        robot.Intake.setPower(-0.5);
+        robot.Intake.setPower(-0.3);
         sleep(3000);
         robot.Intake.setPower(0);
         sleep(1000);
@@ -61,24 +61,28 @@ public class TestAuto extends LinearOpMode {
         sleep(1000);
         robot.ClawSide.setPosition(0.8);*/
 
+        /*sleep(1000);
+        drive(1, 1, 30);*/
         sleep(1000);
-        forward(1, 30);
-        // strafe(1, 10, 2);
+        drive(-1, 1, 0.3);
+        sleep(1000);
+        drive(1, -1, 0.3);
         //-------------------------------------------------//
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
-    public void forward(double speed, double timeout) {
-        speed = -speed;
+    public void drive(double leftPower, double rightPower, double timeout) {
+        leftPower = -leftPower;
+        rightPower = -rightPower;
 
         if (opModeIsActive()) {
             runtime.reset();
-            robot.LFDrive.setPower(speed);
-            robot.RFDrive.setPower(speed);
-            robot.LBDrive.setPower(speed);
-            robot.RBDrive.setPower(speed);
+            robot.LFDrive.setPower(leftPower);
+            robot.RFDrive.setPower(rightPower);
+            robot.LBDrive.setPower(leftPower);
+            robot.RBDrive.setPower(rightPower);
 
             while (opModeIsActive() &&
                     (runtime.seconds() < timeout)) {
@@ -90,16 +94,6 @@ public class TestAuto extends LinearOpMode {
             robot.LBDrive.setPower(0);
             robot.RBDrive.setPower(0);
         }
-    }
-
-    public void turn(double speed, double angle, double timeout) { //Angles are not accurate
-        double realangle = (136 * Math.PI) * (angle / 360);
-        if (Math.abs(90 - angle) <= Math.abs(270 - angle)) {
-            encoderDrive(speed, realangle, -realangle, timeout);
-        } else {
-            encoderDrive(speed, -realangle, realangle, timeout);
-        }
-
     }
 
     public void duck(double timeoutS) {

@@ -57,32 +57,45 @@ public class R1 extends LinearOpMode {
         sleep(3000);
         robot.Intake.setPower(0);
         sleep(1000);
-        runSlides(robot, 0.5, (int)(0.0 * COUNTS_PER_INCH2), 2);
+        runSlides(robot, 0.5, (int)(0.0 * COUNTS_PER_INCH2), 6);
         sleep(1000);
         robot.ClawSide.setPosition(0.8);
 
         sleep(1000);
-        turn(PRECISION_DRIVE_SPEED, 135, 1);
+        drive(-1, 1, 0.18);
         sleep(1000);
-        forward(PRECISION_DRIVE_SPEED, 10, 0.5);
+        strafe(-1, 0.375);
+        sleep(1000);
+        drive(-0.9, -1, 0.4);
+        sleep(1000);
+        strafe(1, 0.4);
         //-------------------------------------------------//
 
         telemetry.addData("Path", "Complete");
         telemetry.update();
     }
 
-    public void forward(double speed, double inches, double timeout) {
-        encoderDrive(speed, inches, inches, timeout);
-    }
+    public void drive(double leftPower, double rightPower, double timeout) {
+        leftPower = -leftPower;
+        rightPower = -rightPower;
 
-    public void turn(double speed, double angle, double timeout) { //Angles are not accurate
-        double realangle = (136 * Math.PI) * (angle / 360);
-        if (Math.abs(90 - angle) <= Math.abs(270 - angle)) {
-            encoderDrive(speed, realangle, -realangle, timeout);
-        } else {
-            encoderDrive(speed, -realangle, realangle, timeout);
+        if (opModeIsActive()) {
+            runtime.reset();
+            robot.LFDrive.setPower(leftPower);
+            robot.RFDrive.setPower(rightPower);
+            robot.LBDrive.setPower(leftPower);
+            robot.RBDrive.setPower(rightPower);
+
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeout)) {
+                telemetry.update();
+            }
+
+            robot.LFDrive.setPower(0);
+            robot.RFDrive.setPower(0);
+            robot.LBDrive.setPower(0);
+            robot.RBDrive.setPower(0);
         }
-
     }
 
     public void duck(double timeoutS) {
@@ -101,17 +114,17 @@ public class R1 extends LinearOpMode {
         }
     }
 
-    public void strafe(double speed, double inches, double timeoutS) {
+    public void strafe(double speed, double timeout) {
 
-        int LFTarget;
+        /*int LFTarget;
         int RFTarget;
         int LBTarget;
-        int RBTarget;
+        int RBTarget;*/
 
         // Ensure that the opmode is still active
         if (opModeIsActive()) {
 
-            LFTarget = robot.LFDrive.getCurrentPosition() - (int) (inches * COUNTS_PER_INCH);
+            /*LFTarget = robot.LFDrive.getCurrentPosition() - (int) (inches * COUNTS_PER_INCH);
             RFTarget = robot.RFDrive.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
             LBTarget = robot.LBDrive.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
             RBTarget = robot.RBDrive.getCurrentPosition() - (int) (inches * COUNTS_PER_INCH);
@@ -119,33 +132,25 @@ public class R1 extends LinearOpMode {
             robot.LFDrive.setTargetPosition(LFTarget);
             robot.RFDrive.setTargetPosition(RFTarget);
             robot.LBDrive.setTargetPosition(LBTarget);
-            robot.RBDrive.setTargetPosition(RBTarget);
+            robot.RBDrive.setTargetPosition(RBTarget);*/
 
             // reset the timeout time and start motion.
             runtime.reset();
-            robot.LFDrive.setPower(Math.abs(speed));
-            robot.RFDrive.setPower(Math.abs(speed));
-            robot.LBDrive.setPower(Math.abs(speed));
-            robot.RBDrive.setPower(Math.abs(speed));
+            robot.LFDrive.setPower(-speed);
+            robot.RFDrive.setPower(speed);
+            robot.LBDrive.setPower(speed);
+            robot.RBDrive.setPower(-speed);
 
             // Turn On RUN_TO_POSITION
-            robot.LFDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            /*robot.LFDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.RFDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.LBDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.RBDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.RBDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);*/
 
             while (opModeIsActive() &&
-                    (runtime.seconds() < timeoutS) &&
-                    (robot.LFDrive.isBusy() && robot.RFDrive.isBusy() && robot.LBDrive.isBusy() && robot.RBDrive.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("Path1", "Running to %7d :%7d", LFTarget, RFTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d",
-                        robot.RFDrive.getCurrentPosition(),
-                        robot.RBDrive.getCurrentPosition());
+                    (runtime.seconds() < timeout)) {
                 telemetry.update();
             }
-
 
             robot.LFDrive.setPower(0);
             robot.RFDrive.setPower(0);

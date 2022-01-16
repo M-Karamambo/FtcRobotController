@@ -33,19 +33,17 @@ public class IntakeOpMode extends LinearOpMode {
         double carouselPower = 0.1;
         double intakePower;
 
-        int clawCenterIdx = 0;
-        double[] clawCenterPos = new double[]{0.0, 0.15};
-        boolean aPressed = false;
-
         int clawSideIdx = 0;
-        double[] clawSidePos = new double[]{0.0, 0.30};
+        double[] clawSidePos = new double[]{0.03, 0.15, 0.30};
         boolean xPressed = false;
+        boolean aPressed = false;
 
         int powerIdx = 1;
         int slideIdx = 0;
         double[] slidePow = new double[]{-1.0, 0.0, 1.0};
         double[] slidePos = new double[]{0.0, -15.0, -30.0};
         boolean upPressed = false;
+        boolean sidePressed = false;
         boolean downPressed = false;
         boolean shouldRun = true;
 
@@ -90,24 +88,39 @@ public class IntakeOpMode extends LinearOpMode {
             //--------------------------------------------------------------------------------------
 
             if (!xPressed && gamepad1.x) {
-                if (clawSideIdx == 0) {
-                    clawSideIdx = 1;
-                } else if (clawSideIdx == 1) {
+                if (clawSideIdx != 2) {
+                    clawSideIdx = 2;
+                } else {
                     clawSideIdx = 0;
                 }
             }
             xPressed = gamepad1.x;
 
+            if (!aPressed && gamepad1.a) {
+                if (clawSideIdx != 1) {
+                    clawSideIdx = 1;
+                } else {
+                    clawSideIdx = 0;
+                }
+            }
+            aPressed = gamepad1.a;
+
             //--------------------------------------------------------------------------------------
 
-            if (!upPressed && gamepad1.dpad_up && slideIdx < 2) {
-                slideIdx++;
+            if (!upPressed && gamepad1.dpad_up) {
+                slideIdx = 2;
                 shouldRun = true;
             }
             upPressed = gamepad1.dpad_up;
 
-            if (!downPressed && gamepad1.dpad_down && slideIdx > 0) {
-                slideIdx--;
+            if (!sidePressed && gamepad1.dpad_right) {
+                slideIdx = 1;
+                shouldRun = true;
+            }
+            sidePressed = gamepad1.dpad_right;
+
+            if (!downPressed && gamepad1.dpad_down) {
+                slideIdx = 0;
                 shouldRun = true;
             }
             downPressed = gamepad1.dpad_down;
@@ -127,20 +140,20 @@ public class IntakeOpMode extends LinearOpMode {
             }
             robot.Carousel.setPower(((gamepad1.b || gamepad1.y) ? carouselPower : 0) * multiplier);
 
-            robot.ClawCenter.setPosition(clawCenterPos[clawCenterIdx]);
+            // robot.ClawCenter.setPosition(clawCenterPos[clawCenterIdx]);
             robot.ClawSide.setPosition(clawSidePos[clawSideIdx]);
             // robot.ClawRight.setPosition(1 - clawSidePos[clawSideIdx]);
 
             int slideTarget = (int) (slidePos[slideIdx] * COUNTS_PER_INCH);
 
             if (shouldRun) {
-                runSlides(robot, 1, slideTarget, 1);
+                runSlides(robot, 2, slideTarget, 1);
             }
 
             if (Math.abs(slideTarget - robot.Slide.getCurrentPosition()) < 30) {
                 shouldRun = false;
             }
-            robot.Intake.setPower(intakePower);
+            robot.Intake.setPower(intakePower * multiplier);
 
             // Show the elapsed game time and wheel power. Telemetry
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -150,6 +163,8 @@ public class IntakeOpMode extends LinearOpMode {
                     xPressed, gamepad1.x, clawSideIdx, clawSidePos[clawSideIdx]);
             telemetry.addData("Slide motor", "powerIdx (%d), power (%f), position (%7d)",
                     powerIdx, slidePow[powerIdx], robot.Slide.getCurrentPosition());
+            telemetry.addData("dpad arrows", "dpadU (%b), dpadR (%b), dpadD (%b)",
+                    gamepad1.dpad_up, gamepad1.dpad_right, gamepad1.dpad_down);
             telemetry.update();
         }
     }

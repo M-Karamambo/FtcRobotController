@@ -29,7 +29,7 @@ public class RobotHardware {
         RBDrive = hmap.get(DcMotor.class, "right_back_drive");
         Carousel = hmap.get(DcMotor.class, "carousel_spinner");
 
-        ClawCenter = hmap.get(Servo.class, "claw_center");
+        ClawCenter = hmap.get(Servo.class, "claw_center"); //[TODO] remove from configuration
         ClawSide = hmap.get(Servo.class, "claw_side");
 
         Slide = hmap.get(DcMotor.class, "slide_motor");
@@ -40,8 +40,8 @@ public class RobotHardware {
         LBDrive.setDirection(DcMotor.Direction.FORWARD);
         RBDrive.setDirection(DcMotor.Direction.REVERSE);
 
-        ClawCenter.setPosition(0.0);
-        ClawSide.setPosition(0.0);
+        // ClawCenter.setPosition(0.0);
+        // ClawSide.setPosition(0.025);
 
         Slide.setDirection(DcMotor.Direction.FORWARD);
         Intake.setDirection(DcMotor.Direction.FORWARD);
